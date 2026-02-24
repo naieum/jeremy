@@ -1,0 +1,69 @@
+---
+title: API Overview
+description: The Jeremy REST API for searching, ingesting, and managing documentation libraries.
+---
+
+## Base URL
+
+```
+https://jeremy-app.ian-muench.workers.dev
+```
+
+All endpoints are prefixed with `/api/`.
+
+## Authentication
+
+Jeremy supports two authentication methods:
+
+### API Key (Bearer Token)
+
+Include your API key in the `Authorization` header:
+
+```bash
+curl https://jeremy-app.ian-muench.workers.dev/api/search?libraryName=react \
+  -H "Authorization: Bearer jrmy_abc123..."
+```
+
+API keys follow the format `jrmy_<64-hex-characters>`. You can create keys from the [dashboard](/docs/dashboard) or via the [keys API](/docs/api/keys).
+
+### Session Cookie
+
+Authenticated browser sessions (after signing in via the dashboard) automatically include a session cookie. This is used by the dashboard and works for all endpoints.
+
+## Permissions
+
+API keys have one of two permission levels:
+
+| Permission | Access |
+| --- | --- |
+| `read` | [Search](/docs/api/search) and [Context](/docs/api/context) endpoints |
+| `admin` | All endpoints, including [Ingest](/docs/api/ingest), [Crawl](/docs/api/crawl), [Embed](/docs/api/embed), and delete operations |
+
+Session authentication grants full access (equivalent to `admin`).
+
+## Response Format
+
+All responses are JSON. Successful responses return the relevant data directly. Errors return an `error` field:
+
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+## Endpoints
+
+| Method | Endpoint | Description | Auth |
+| --- | --- | --- | --- |
+| `GET` | [/api/search](/docs/api/search) | Search for libraries by name | read |
+| `GET` | [/api/context](/docs/api/context) | Query documentation chunks | read |
+| `POST` | [/api/ingest](/docs/api/ingest) | Ingest documentation chunks | admin |
+| `POST` | [/api/ingest-url](/docs/api/ingest-url) | Ingest from a URL | admin / session |
+| `POST` | [/api/crawl](/docs/api/crawl) | Crawl and ingest a website | admin / session |
+| `POST` | [/api/embed](/docs/api/embed) | Generate embeddings for chunks | admin / session |
+| `GET/POST/DELETE` | [/api/keys](/docs/api/keys) | Manage API keys | session only |
+| `GET/DELETE` | [/api/libraries](/docs/api/libraries) | Manage libraries | varies |
+
+## Rate Limits
+
+The API runs on Cloudflare Workers. There are no explicit rate limits, but large operations (crawling, embedding) are bounded by Worker execution time limits.

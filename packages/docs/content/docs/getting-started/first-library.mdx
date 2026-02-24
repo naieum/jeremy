@@ -1,0 +1,72 @@
+---
+title: Ingest Your First Library
+description: Add library documentation to Jeremy using llms.txt or URL crawling.
+---
+
+Jeremy supports two methods for ingesting documentation: **llms.txt files** and **URL crawling**.
+
+## Method 1: llms.txt (Recommended)
+
+The [llms.txt standard](https://llmstxt.org) is a convention where websites publish a machine-readable index of their documentation. Many popular libraries support it. This is the preferred method because it provides structured, comprehensive coverage of a library's docs.
+
+```bash
+jeremy add --name react --id react --llms-txt https://react.dev/llms.txt
+```
+
+The `--name` flag is a human-readable label, and `--id` is a unique slug used to reference the library in queries.
+
+### How it works
+
+1. Jeremy fetches the `llms.txt` file, which contains links to individual documentation pages.
+2. Each linked page is fetched and its content is extracted.
+3. The content is split into chunks sized for embedding.
+4. The chunks are sent to the Jeremy server, which generates vector embeddings and stores them in Vectorize.
+
+## Method 2: URL Crawl
+
+For libraries that don't publish an `llms.txt` file, you can ingest a single page by URL:
+
+```bash
+jeremy add --name mylib --id mylib --url https://mylib.dev/docs
+```
+
+This crawls the given URL, extracts its content, chunks it, and ingests it the same way.
+
+### When to use URL crawl
+
+- The library doesn't have an `llms.txt` file.
+- You want to ingest a specific page rather than an entire doc site.
+- You're ingesting internal or private documentation.
+
+## What Happens During Ingestion
+
+Regardless of the method, the ingestion process follows these steps:
+
+1. **Fetch** -- the CLI downloads the documentation content from the provided URL(s).
+2. **Chunk** -- the content is split into smaller pieces (chunks) that fit within embedding model token limits. Each chunk preserves its source URL and title as metadata.
+3. **Upload** -- the chunks are sent to the Jeremy API's `/api/ingest` endpoint.
+4. **Embed** -- the server generates vector embeddings for each chunk using Cloudflare Workers AI.
+5. **Store** -- the embeddings are indexed in Cloudflare Vectorize, and the library metadata is saved to D1.
+
+Once ingestion completes, the library is immediately queryable via the API, MCP server, or dashboard.
+
+## Managing Libraries
+
+After ingestion, you can manage your libraries with the CLI:
+
+```bash
+# List all ingested libraries
+jeremy list
+
+# Re-ingest a library from its original source
+jeremy refresh --id react
+
+# Remove a library
+jeremy delete --id react
+```
+
+## Next Steps
+
+- [CLI reference](/docs/cli) -- full documentation for all CLI commands.
+- [Use the MCP server](/docs/mcp) -- query your ingested libraries from AI assistants.
+- [API reference](/docs/api) -- access ingestion and search programmatically.

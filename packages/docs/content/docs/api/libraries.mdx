@@ -1,0 +1,124 @@
+---
+title: Libraries
+description: List, inspect, and delete documentation libraries.
+---
+
+## List Libraries
+
+### GET /api/libraries
+
+Returns all libraries in the system.
+
+**Auth:** none required
+
+#### Response
+
+```json
+{
+  "libraries": [
+    {
+      "id": "react",
+      "name": "React",
+      "description": "A JavaScript library for building user interfaces",
+      "sourceUrl": "https://react.dev/llms.txt",
+      "sourceType": "llms_txt",
+      "version": "19.0.0",
+      "chunkCount": 142,
+      "ownerId": "user_abc123",
+      "createdAt": "2025-06-01T08:00:00Z",
+      "updatedAt": "2025-06-15T12:00:00Z"
+    }
+  ]
+}
+```
+
+#### Example
+
+```bash
+curl https://jeremy-app.ian-muench.workers.dev/api/libraries
+```
+
+---
+
+## Get Library
+
+### GET /api/libraries/:id
+
+Returns a single library with its chunk metadata.
+
+**Auth:** none required
+
+#### Path Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `id` | string | The library ID |
+
+#### Response
+
+```json
+{
+  "library": {
+    "id": "react",
+    "name": "React",
+    "description": "A JavaScript library for building user interfaces",
+    "sourceUrl": "https://react.dev/llms.txt",
+    "sourceType": "llms_txt",
+    "version": "19.0.0",
+    "chunkCount": 142,
+    "ownerId": "user_abc123",
+    "createdAt": "2025-06-01T08:00:00Z",
+    "updatedAt": "2025-06-15T12:00:00Z"
+  },
+  "chunks": [
+    {
+      "id": "react:0",
+      "title": "Introduction",
+      "url": "https://react.dev/learn",
+      "tokenCount": 450
+    }
+  ]
+}
+```
+
+#### Example
+
+```bash
+curl https://jeremy-app.ian-muench.workers.dev/api/libraries/react
+```
+
+---
+
+## Delete Library
+
+### DELETE /api/libraries/:id
+
+Delete a library and all its associated data, including chunks in D1, vectors in Vectorize, and backups in R2.
+
+**Auth:** none required (the endpoint does not currently enforce auth)
+
+#### Path Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `id` | string | The library ID |
+
+#### Response
+
+```json
+{
+  "success": true
+}
+```
+
+#### Example
+
+```bash
+curl -X DELETE https://jeremy-app.ian-muench.workers.dev/api/libraries/my-lib
+```
+
+### Errors
+
+| Status | Description |
+| --- | --- |
+| 404 | Library not found |

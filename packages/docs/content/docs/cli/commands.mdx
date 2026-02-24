@@ -1,0 +1,126 @@
+---
+title: Commands
+description: Full reference for all Jeremy CLI commands.
+---
+
+## jeremy add
+
+Ingest a new library into Jeremy.
+
+### From llms.txt
+
+```bash
+jeremy add --name <name> --id <id> --llms-txt <url>
+```
+
+Fetches an `llms.txt` file and ingests all linked documentation pages.
+
+```bash
+jeremy add --name react --id react --llms-txt https://react.dev/llms.txt
+```
+
+### From a web URL
+
+```bash
+jeremy add --name <name> --id <id> --url <url>
+```
+
+Crawls a web page and ingests its content. Jeremy uses Browser Rendering to handle JavaScript-rendered pages.
+
+```bash
+jeremy add --name tailwind --id tailwind --url https://tailwindcss.com/docs
+```
+
+### Options
+
+| Option | Required | Description |
+|---|---|---|
+| `--name` | Yes | Display name of the library |
+| `--id` | Yes | Unique identifier for the library |
+| `--llms-txt` | One of | URL to an `llms.txt` file |
+| `--url` | One of | URL to a documentation page |
+
+---
+
+## jeremy list
+
+List all ingested libraries.
+
+```bash
+jeremy list
+```
+
+Outputs a table with each library's ID, name, chunk count, and source type.
+
+---
+
+## jeremy refresh
+
+Re-ingest a library from its stored source URL. Use this to pick up documentation updates.
+
+```bash
+jeremy refresh --id <id>
+```
+
+```bash
+jeremy refresh --id react
+```
+
+| Option | Required | Description |
+|---|---|---|
+| `--id` | Yes | ID of the library to refresh |
+
+---
+
+## jeremy delete
+
+Delete a library and all its chunks.
+
+```bash
+jeremy delete --id <id>
+```
+
+```bash
+jeremy delete --id react
+```
+
+| Option | Required | Description |
+|---|---|---|
+| `--id` | Yes | ID of the library to delete |
+
+---
+
+## jeremy config set
+
+Set a CLI configuration value.
+
+```bash
+jeremy config set <key> <value>
+```
+
+### Configuration Keys
+
+| Key | Description |
+|---|---|
+| `endpoint` | Base URL of your Jeremy instance |
+| `api-key` | Your API key for authentication |
+
+```bash
+jeremy config set endpoint https://jeremy-app.ian-muench.workers.dev
+jeremy config set api-key jrmy_your_api_key_here
+```
+
+---
+
+## jeremy config get
+
+Get a CLI configuration value.
+
+```bash
+jeremy config get <key>
+```
+
+```bash
+jeremy config get endpoint
+# https://jeremy-app.ian-muench.workers.dev
+```

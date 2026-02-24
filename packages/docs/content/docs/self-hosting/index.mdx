@@ -1,0 +1,31 @@
+---
+title: Self-Hosting
+description: Run your own Jeremy instance on Cloudflare.
+---
+
+Jeremy is designed to be self-hosted on Cloudflare's developer platform. Running your own instance gives you full control over your documentation data and infrastructure.
+
+## Why Self-Host?
+
+- **Full control over your data** -- your documentation stays on your own Cloudflare account. Nothing is shared with third parties.
+- **No rate limits** -- you control the usage limits based on your Cloudflare plan.
+- **Customize for your needs** -- modify the source code, add custom ingestion logic, or integrate with internal tools.
+- **CI/CD integration** -- automate library ingestion and refresh as part of your deployment pipeline.
+
+## What You'll Need
+
+Jeremy runs on several Cloudflare services, all available on the free tier:
+
+- **Workers** -- serverless compute for the API and frontend.
+- **D1** -- SQLite database for metadata, users, and API keys.
+- **Vectorize** -- vector database for semantic search embeddings.
+- **R2** -- object storage for raw chunk backups.
+- **Workers AI** -- generates vector embeddings from documentation text.
+- **Browser Rendering** -- headless Chromium for crawling JavaScript-rendered documentation pages.
+
+## Next Steps
+
+- [Prerequisites](/docs/self-hosting/prerequisites) -- check your environment is ready.
+- [Deployment](/docs/self-hosting/deployment) -- step-by-step deployment guide.
+- [Configuration](/docs/self-hosting/configuration) -- environment variables and bindings reference.
+- [Database](/docs/self-hosting/database) -- D1 schema details.

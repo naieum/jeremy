@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "index",
+    "---Getting Started---",
+    "getting-started",
+    "---Using Jeremy---",
+    "dashboard",
+    "api",
+    "mcp",
+    "cli",
+    "---Operations---",
+    "self-hosting",
+    "architecture"
+  ]
+}

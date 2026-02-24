@@ -1,0 +1,93 @@
+---
+title: Embed
+description: Generate vector embeddings for library chunks.
+---
+
+## POST /api/embed
+
+Generate vector embeddings for chunks in a library. This is used for large libraries that exceeded the auto-embed limit during [ingestion](/docs/api/ingest) (50 chunks) or [crawling](/docs/api/crawl) (500 chunks).
+
+Call this endpoint repeatedly with `nextOffset` until `done` is `true`.
+
+**Auth:** `admin` API key or session
+
+### Request Body
+
+```json
+{
+  "libraryId": "my-lib",
+  "limit": 200,
+  "offset": 0
+}
+```
+
+| Field | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `libraryId` | string | Yes | | The library to generate embeddings for |
+| `limit` | number | No | 200 | Number of chunks to process per request |
+| `offset` | number | No | 0 | Starting offset into the chunk list |
+
+### Response
+
+```json
+{
+  "libraryId": "my-lib",
+  "processed": 200,
+  "total": 850,
+  "offset": 0,
+  "nextOffset": 200,
+  "done": false
+}
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `libraryId` | string | The library ID |
+| `processed` | number | Chunks processed in this request |
+| `total` | number | Total chunks in the library |
+| `offset` | number | The offset used for this request |
+| `nextOffset` | number \| null | Offset for the next call, or `null` if done |
+| `done` | boolean | `true` when all chunks have been embedded |
+
+### Example
+
+Process all embeddings for a large library:
+
+```bash
+# First batch
+curl -X POST https://jeremy-app.ian-muench.workers.dev/api/embed \
+  -H "Authorization: Bearer jrmy_your_admin_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"libraryId": "my-lib"}'
+
+# Subsequent batches (use nextOffset from the previous response)
+curl -X POST https://jeremy-app.ian-muench.workers.dev/api/embed \
+  -H "Authorization: Bearer jrmy_your_admin_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"libraryId": "my-lib", "offset": 200}'
+```
+
+Loop until complete:
+
+```bash
+OFFSET=0
+DONE=false
+while [ "$DONE" != "true" ]; do
+  RESPONSE=$(curl -s -X POST https://jeremy-app.ian-muench.workers.dev/api/embed \
+    -H "Authorization: Bearer jrmy_your_admin_key_here" \
+    -H "Content-Type: application/json" \
+    -d "{\"libraryId\": \"my-lib\", \"offset\": $OFFSET}")
+  echo "$RESPONSE"
+  DONE=$(echo "$RESPONSE" | jq -r '.done')
+  OFFSET=$(echo "$RESPONSE" | jq -r '.nextOffset // empty')
+  [ -z "$OFFSET" ] && break
+done
+```
+
+### Errors
+
+| Status | Description |
+| --- | --- |
+| 400 | Missing `libraryId` |
+| 401 | Missing or insufficient auth (requires admin API key or session) |
+| 500 | Embedding generation failed |

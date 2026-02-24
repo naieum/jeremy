@@ -1,0 +1,122 @@
+---
+title: API Keys
+description: Create, list, and revoke API keys.
+---
+
+API keys are managed through the `/api/keys` endpoint. All key management requires session authentication (dashboard login) -- API keys cannot be used to manage other API keys.
+
+## List Keys
+
+### GET /api/keys
+
+Returns all API keys for the authenticated user. The full key value is never returned after creation.
+
+**Auth:** session only
+
+#### Response
+
+```json
+{
+  "keys": [
+    {
+      "id": "a1b2c3d4-...",
+      "name": "My Read Key",
+      "keyPrefix": "jrmy_abc123...",
+      "permissions": "read",
+      "lastUsedAt": "2025-06-15T12:00:00Z",
+      "createdAt": "2025-06-01T08:00:00Z"
+    }
+  ]
+}
+```
+
+#### Example
+
+```bash
+curl https://jeremy-app.ian-muench.workers.dev/api/keys \
+  -H "Cookie: your_session_cookie"
+```
+
+---
+
+## Create Key
+
+### POST /api/keys
+
+Create a new API key. The full key is returned only once in the response -- store it securely.
+
+**Auth:** session only
+
+#### Request Body
+
+```json
+{
+  "name": "CI Pipeline Key",
+  "permissions": "admin"
+}
+```
+
+| Field | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `name` | string | Yes | | A descriptive name for the key |
+| `permissions` | string | No | `read` | Permission level: `read` or `admin` |
+
+#### Response
+
+```json
+{
+  "id": "a1b2c3d4-...",
+  "name": "CI Pipeline Key",
+  "key": "jrmy_4f8a2b1c9d3e7f6a5b0c8d2e1f4a7b3c9d6e0f5a8b2c1d4e7f3a6b9c0d5e2f1a",
+  "keyPrefix": "jrmy_4f8a2b",
+  "permissions": "admin"
+}
+```
+
+#### Example
+
+```bash
+curl -X POST https://jeremy-app.ian-muench.workers.dev/api/keys \
+  -H "Cookie: your_session_cookie" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "My Key", "permissions": "read"}'
+```
+
+---
+
+## Delete Key
+
+### DELETE /api/keys
+
+Revoke an API key. The key is permanently deleted and can no longer be used for authentication.
+
+**Auth:** session only
+
+#### Query Parameters
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | string | Yes | The ID of the key to delete |
+
+#### Response
+
+```json
+{
+  "success": true
+}
+```
+
+#### Example
+
+```bash
+curl -X DELETE "https://jeremy-app.ian-muench.workers.dev/api/keys?id=a1b2c3d4-..." \
+  -H "Cookie: your_session_cookie"
+```
+
+### Errors
+
+| Status | Description |
+| --- | --- |
+| 400 | Missing `name` (create) or `id` (delete) |
+| 401 | Not authenticated (session required) |
+| 404 | Key not found (delete) |

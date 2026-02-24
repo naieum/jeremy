@@ -1,0 +1,50 @@
+{
+  "name": "@jeremy/app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && wrangler deploy",
+    "cf-typegen": "wrangler types",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 execute jeremy-db --local --file",
+    "db:migrate:remote": "wrangler d1 execute jeremy-db --remote --file",
+    "test:setup": "npx tsx tests/setup-env.ts",
+    "test": "npx tsx tests/setup-env.ts && npx playwright test",
+    "test:api": "npx tsx tests/setup-env.ts && npx playwright test --project=setup --project=api",
+    "test:ui": "npx tsx tests/setup-env.ts && npx playwright test --project=setup --project=ui",
+    "test:only": "npx playwright test"
+  },
+  "dependencies": {
+    "@ark-ui/react": "^5.32.0",
+    "@cloudflare/puppeteer": "^1.0.6",
+    "@tanstack/react-form": "^1.12.0",
+    "@tanstack/react-query": "^5.62.0",
+    "@tanstack/react-router": "^1.162.1",
+    "@tanstack/react-start": "^1.162.1",
+    "@tanstack/react-table": "^8.20.0",
+    "better-auth": "^1.2.0",
+    "drizzle-orm": "^0.39.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.25.2",
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "@playwright/test": "^1.58.2",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/node": "^22.5.4",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^5.1.4",
+    "autoprefixer": "^10.4.20",
+    "drizzle-kit": "^0.30.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^7.3.1",
+    "vite-tsconfig-paths": "^6.1.1",
+    "wrangler": "^4.67.0"
+  }
+}

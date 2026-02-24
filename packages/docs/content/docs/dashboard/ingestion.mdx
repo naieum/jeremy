@@ -1,0 +1,68 @@
+---
+title: Ingestion
+description: Add documentation libraries to Jeremy through the dashboard or the ingest API.
+---
+
+The Add Library page (`/dashboard/libraries/add`) lets you ingest documentation directly from a URL. Jeremy fetches the content, splits it into chunks, generates embeddings, and indexes everything for search.
+
+## Adding a library from the dashboard
+
+1. Go to **Libraries** and click **Add Library**
+2. Fill in the form:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Library Name | Yes | Human-readable name (e.g., "React") |
+| Library ID | Yes | Unique identifier in `/org/repo` format (e.g., `/facebook/react`) |
+| Source Type | Yes | `llms.txt`, `Web Crawl`, or `Manual` |
+| Source URL | Yes | URL to fetch documentation from |
+| Description | No | Brief description of the library |
+
+3. Click **Add Library**
+
+The dashboard fetches the URL, chunks the content, generates embeddings, and stores everything. This may take a minute for large documentation sites. A progress message is shown while ingestion runs.
+
+## Source types
+
+### llms.txt
+
+For sites that publish an `llms.txt` file (a structured index of documentation pages), Jeremy fetches the index and all referenced pages. This is the recommended source type when available.
+
+Example URL: `https://react.dev/llms.txt`
+
+### Web Crawl
+
+For sites without an `llms.txt` file, Jeremy fetches the provided URL directly and extracts content. This is suitable for single pages or sites where you want to index specific content.
+
+### Manual
+
+Use this for documentation you plan to ingest through the API rather than by URL crawling. You still provide a source URL for reference.
+
+## How ingestion works
+
+When you submit a library for ingestion:
+
+1. **Fetch** — Jeremy fetches the source URL. For `llms.txt` sources, it follows the index and retrieves all linked pages.
+2. **Chunk** — The raw content is split into segments of approximately 500 words each. Each chunk gets a unique ID, title, and token count.
+3. **Embed** — Each chunk is sent to Workers AI using the `@cf/baai/bge-base-en-v1.5` embedding model. This generates a 768-dimensional vector for each chunk.
+4. **Store vectors** — The embedding vectors are upserted into Cloudflare Vectorize for semantic search.
+5. **Store chunks** — The raw chunk data (ID, title, content, URL, token count) is inserted into Cloudflare D1.
+6. **Backup** — A JSON backup of all chunks is written to Cloudflare R2 at `{libraryId}/chunks.json`.
+
+If a library with the same ID already exists, the existing chunks and vectors are deleted and replaced with the new content.
+
+## Ingestion via API
+
+You can also ingest documentation programmatically using the `POST /api/ingest` endpoint. This accepts pre-chunked content and supports options like `replace` and `skipEmbeddings`. See the [API reference](/docs/api) for details.
+
+For large libraries with more than 50 chunks, the API skips automatic embedding generation to avoid Worker timeouts. Use the `/api/embed` endpoint to generate embeddings separately after ingestion.
+
+## Using the CLI
+
+The Jeremy CLI provides the most convenient way to ingest documentation:
+
+```bash
+npx jeremy-cli add --llms-txt https://react.dev/llms.txt
+```
+
+See the [CLI documentation](/docs/cli) for all available options.

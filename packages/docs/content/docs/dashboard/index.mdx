@@ -1,0 +1,45 @@
+---
+title: Dashboard Overview
+description: Manage libraries, API keys, and documentation ingestion through the Jeremy web dashboard.
+---
+
+The Jeremy dashboard is a web interface for managing your documentation instance. It is available at your deployment URL (e.g., `https://jeremy-app.ian-muench.workers.dev`).
+
+## What you can do
+
+The dashboard home page shows a summary of your instance:
+
+- **Libraries** — total number of ingested documentation libraries
+- **Doc Chunks** — total number of indexed documentation chunks across all libraries
+- **API Keys** — number of active API keys
+
+Each stat links to its management page.
+
+## Navigation
+
+The sidebar provides access to all sections:
+
+| Section | Path | Purpose |
+|---------|------|---------|
+| Overview | `/dashboard` | Instance stats and quick start guide |
+| Libraries | `/dashboard/libraries` | View, inspect, and delete libraries |
+| Add Library | `/dashboard/libraries/add` | Ingest documentation from a URL |
+| API Keys | `/dashboard/keys` | Create and revoke API keys |
+| Settings | `/dashboard/settings` | View your profile and MCP configuration |
+
+## Quick start
+
+The dashboard home page includes a quick start checklist:
+
+1. [Create an API key](/docs/dashboard/api-keys) with admin permissions
+2. Install the CLI: `npx jeremy-cli`
+3. Ingest docs: `jeremy add --llms-txt https://react.dev/llms.txt`
+4. [View your libraries](/docs/dashboard/libraries)
+
+## Authentication
+
+You must be signed in to access the dashboard. If you are not authenticated, you will be redirected to the login page. See [Authentication](/docs/dashboard/authentication) for details on creating an account and signing in.
+
+## Technical details
+
+The dashboard is a single-page application built with React 19 and TanStack Router (Start). It runs as a Cloudflare Worker with server-side data loading via TanStack Start server functions. All data is stored in Cloudflare D1.

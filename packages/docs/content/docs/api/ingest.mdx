@@ -1,0 +1,101 @@
+---
+title: Ingest
+description: Ingest documentation chunks into a library.
+---
+
+## POST /api/ingest
+
+Ingest pre-chunked documentation into a library. Creates the library if it does not exist, or updates it if it does. Chunks are inserted in batches, embeddings are auto-generated for small payloads, and raw data is backed up to R2.
+
+**Auth:** `admin` API key or session
+
+### Request Body
+
+```json
+{
+  "libraryId": "my-lib",
+  "name": "My Library",
+  "description": "Optional description",
+  "sourceUrl": "https://example.com/docs",
+  "sourceType": "llms_txt",
+  "version": "1.0.0",
+  "chunks": [
+    {
+      "id": "my-lib:0",
+      "title": "Getting Started",
+      "content": "The full text content of this chunk...",
+      "url": "https://example.com/docs/getting-started",
+      "tokenCount": 350
+    }
+  ],
+  "replace": false,
+  "skipEmbeddings": false
+}
+```
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `libraryId` | string | Yes | Unique identifier for the library |
+| `name` | string | Yes | Display name |
+| `description` | string | No | Library description |
+| `sourceUrl` | string | No | Origin URL of the documentation |
+| `sourceType` | string | No | Source type (defaults to `llms_txt`) |
+| `version` | string | No | Library version |
+| `chunks` | array | Yes | Array of chunk objects (see below) |
+| `replace` | boolean | No | If `true`, deletes all existing chunks and vectors before inserting |
+| `skipEmbeddings` | boolean | No | If `true`, skips embedding generation entirely |
+
+#### Chunk Object
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | string | Yes | Unique chunk identifier |
+| `title` | string | No | Chunk title / heading |
+| `content` | string | Yes | The text content |
+| `url` | string | No | Source URL for this chunk |
+| `tokenCount` | number | No | Approximate token count |
+
+### Response
+
+```json
+{
+  "success": true,
+  "libraryId": "my-lib",
+  "chunksIngested": 25,
+  "vectorized": true
+}
+```
+
+The `vectorized` field indicates whether embeddings were generated. Embeddings are auto-generated when the payload contains 50 or fewer chunks. For larger payloads, use the [embed endpoint](/docs/api/embed) afterward.
+
+### Example
+
+```bash
+curl -X POST https://jeremy-app.ian-muench.workers.dev/api/ingest \
+  -H "Authorization: Bearer jrmy_your_admin_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "libraryId": "my-lib",
+    "name": "My Library",
+    "chunks": [
+      {
+        "id": "my-lib:0",
+        "title": "Introduction",
+        "content": "Welcome to My Library..."
+      },
+      {
+        "id": "my-lib:1",
+        "title": "Installation",
+        "content": "Run npm install my-lib..."
+      }
+    ]
+  }'
+```
+
+### Errors
+
+| Status | Description |
+| --- | --- |
+| 400 | Missing `libraryId`, `name`, or `chunks` |
+| 401 | Missing or insufficient auth (requires admin API key or session) |
+| 500 | Internal error during ingestion |

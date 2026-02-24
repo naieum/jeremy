@@ -1,0 +1,56 @@
+# Core ML
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.24.0
+opencv-python>=4.8.0
+pillow>=10.0.0
+
+# Face Detection & Analysis
+insightface>=0.7.3
+onnxruntime-gpu>=1.16.0  # Use onnxruntime for CPU-only
+facenet-pytorch>=2.5.3
+
+# Background Segmentation
+mediapipe>=0.10.8
+rembg>=2.0.50
+
+# Diffusion Models
+diffusers>=0.24.0
+transformers>=4.35.0
+accelerate>=0.24.0
+safetensors>=0.4.0
+
+# Face Swapping & Enhancement
+realesrgan>=0.3.0
+gfpgan>=1.3.8
+codeformer>=0.1.0
+
+# Real-time Streaming
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-socketio>=5.9.0
+aiortc>=1.6.0
+websockets>=12.0
+
+# Video Processing
+imageio>=2.31.0
+imageio-ffmpeg>=0.4.9
+av>=11.0.0
+
+# Training
+tensorboard>=2.15.0
+wandb>=0.16.0
+pytorch-lightning>=2.1.0
+
+# Utilities
+pydantic>=2.5.0
+python-multipart>=0.0.6
+aiofiles>=23.2.0
+tqdm>=4.66.0
+einops>=0.7.0
+omegaconf>=2.3.0
+
+# Optional: For model optimization
+onnx>=1.15.0
+tensorrt>=8.6.0
+openvino>=2023.2.0

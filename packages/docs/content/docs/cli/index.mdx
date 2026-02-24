@@ -1,0 +1,39 @@
+---
+title: CLI
+description: Manage Jeremy libraries from the command line.
+---
+
+The `jeremy` CLI lets you manage documentation libraries from the terminal. Use it to ingest new libraries, list existing ones, refresh content, and delete libraries you no longer need.
+
+## Commands
+
+| Command | Description |
+|---|---|
+| `jeremy add` | Ingest a new library from an `llms.txt` file or web URL |
+| `jeremy list` | List all ingested libraries |
+| `jeremy refresh` | Re-ingest a library from its stored source |
+| `jeremy delete` | Delete a library |
+| `jeremy config` | Get or set CLI configuration |
+
+See [Commands](/docs/cli/commands) for full usage details and examples.
+
+## Quick Example
+
+```bash
+# Ingest a library from its llms.txt
+jeremy add --name react --id react --llms-txt https://react.dev/llms.txt
+
+# List all libraries
+jeremy list
+
+# Refresh a library to pick up new docs
+jeremy refresh --id react
+
+# Delete a library
+jeremy delete --id react
+```
+
+## Next Steps
+
+- [Installation](/docs/cli/installation) -- install and configure the CLI.
+- [Commands](/docs/cli/commands) -- full reference for every command.

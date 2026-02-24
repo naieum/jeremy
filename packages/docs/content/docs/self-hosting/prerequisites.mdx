@@ -1,0 +1,30 @@
+---
+title: Prerequisites
+description: What you need before deploying Jeremy.
+---
+
+## Required
+
+- **Cloudflare account** -- a free tier account works. You'll need access to Workers, D1, R2, Vectorize, Workers AI, and Browser Rendering.
+- **Node.js 18+** -- required to run the build and deployment tools.
+- **npm** -- comes with Node.js.
+- **Wrangler CLI** -- Cloudflare's command-line tool for managing Workers projects.
+
+Install Wrangler:
+
+```bash
+npm install -g wrangler
+```
+
+Authenticate with your Cloudflare account:
+
+```bash
+wrangler login
+```
+
+## Optional
+
+- **GitHub OAuth app credentials** -- for GitHub social login. Create an OAuth app in your [GitHub Developer Settings](https://github.com/settings/developers). Set the callback URL to `https://your-domain/api/auth/callback/github`.
+- **Google OAuth app credentials** -- for Google social login. Create credentials in the [Google Cloud Console](https://console.cloud.google.com/apis/credentials). Set the redirect URI to `https://your-domain/api/auth/callback/google`.
+
+If you skip the OAuth setup, users can still sign up with email/password.

@@ -1,0 +1,40 @@
+---
+title: Libraries
+description: View, inspect, and delete ingested documentation libraries from the dashboard.
+---
+
+The Libraries page (`/dashboard/libraries`) lists all documentation libraries that have been ingested into your Jeremy instance.
+
+## Library list
+
+The libraries table displays the following fields for each library:
+
+| Field | Description |
+|-------|-------------|
+| `id` | Unique identifier, typically in `/org/repo` format |
+| `name` | Human-readable library name |
+| `description` | Optional description of the library |
+| `version` | Library version, if provided during ingestion |
+| `chunkCount` | Number of documentation chunks indexed |
+| `sourceUrl` | URL the documentation was ingested from |
+| `sourceType` | How the docs were sourced: `llms_txt`, `crawl`, or `manual` |
+
+Click the **Add Library** button to [ingest new documentation](/docs/dashboard/ingestion).
+
+## Library detail
+
+Click any library in the table to view its detail page at `/dashboard/libraries/{id}`. The detail page shows:
+
+- Library metadata (name, ID, version, chunk count, description)
+- Source URL with a link to the original documentation
+- A list of all chunks belonging to the library, including each chunk's title, token count, and source URL
+
+## Deleting a library
+
+On the library detail page, click the **Delete** button in the top-right corner. You will be prompted to confirm the deletion. Deleting a library removes:
+
+- The library record from D1
+- All associated chunks from D1 (cascading delete)
+- The corresponding vectors from Vectorize
+
+This action is permanent and cannot be undone. After deletion, you are redirected back to the libraries list.

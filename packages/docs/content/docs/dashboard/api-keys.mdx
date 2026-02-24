@@ -1,0 +1,58 @@
+---
+title: API Keys
+description: Create and manage API keys for the Jeremy MCP server and CLI.
+---
+
+The API Keys page (`/dashboard/keys`) lets you create and revoke keys used to authenticate with the Jeremy API, MCP server, and CLI.
+
+## Creating a key
+
+1. Navigate to **API Keys** in the dashboard
+2. Click **Create Key**
+3. Enter a name for the key (e.g., "Claude Code MCP")
+4. Select a permission level:
+   - **Read** — can search and query documentation
+   - **Admin** — can search, query, ingest, and delete libraries
+5. Click **Create**
+
+The full API key is displayed once after creation. Copy it immediately — it will not be shown again. The key follows the format `jrmy_` followed by a random string.
+
+After dismissing the creation banner, only the key prefix (e.g., `jrmy_abc123abc1...`) is stored and displayed for identification purposes. The server stores a hash of the full key, not the key itself.
+
+## Using API keys
+
+Set the key as an environment variable:
+
+```bash
+export JEREMY_API_KEY=jrmy_your_key_here
+```
+
+Or pass it in the `Authorization` header when making API requests:
+
+```
+Authorization: Bearer jrmy_your_key_here
+```
+
+The MCP server and CLI both read from the `JEREMY_API_KEY` environment variable by default.
+
+## Key list
+
+Each key in the list shows:
+
+- **Name** — the label you assigned when creating the key
+- **Prefix** — the first characters of the key for identification
+- **Permissions** — `read` or `admin`
+- **Last used** — the date the key was last used to authenticate a request
+
+## Revoking a key
+
+Click **Revoke** next to any key in the list. The key is deleted immediately and can no longer be used for authentication. Any MCP servers or CLI installations using that key will stop working.
+
+## Permission reference
+
+| Permission | Search | Query docs | Ingest libraries | Delete libraries |
+|------------|--------|-----------|-----------------|-----------------|
+| `read` | Yes | Yes | No | No |
+| `admin` | Yes | Yes | Yes | Yes |
+
+Choose `read` for MCP servers and tools that only need to look up documentation. Use `admin` for CI pipelines, the CLI, or any workflow that ingests or manages libraries.

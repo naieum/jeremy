@@ -1,0 +1,91 @@
+---
+title: Crawl
+description: Crawl a website and ingest its documentation.
+---
+
+## POST /api/crawl
+
+Crawl one or more URLs using Puppeteer (Cloudflare Browser Rendering), extract content, chunk it, and ingest it as a library. When a single URL is provided, the crawler auto-discovers links from that page (up to 150 pages).
+
+Content is chunked into approximately 500-word segments with 50-word overlap. Embeddings are auto-generated for libraries with 500 or fewer chunks.
+
+**Auth:** `admin` API key or session
+
+### Request Body
+
+```json
+{
+  "libraryId": "tailwind",
+  "name": "Tailwind CSS",
+  "description": "Utility-first CSS framework",
+  "urls": ["https://tailwindcss.com/docs"],
+  "replace": true
+}
+```
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `libraryId` | string | Yes | Unique identifier for the library |
+| `name` | string | Yes | Display name |
+| `description` | string | No | Library description |
+| `urls` | string[] | Yes | One or more seed URLs to crawl |
+| `replace` | boolean | No | If `true`, deletes existing chunks before inserting new ones |
+
+### Response
+
+```json
+{
+  "success": true,
+  "libraryId": "tailwind",
+  "pagesDiscovered": 48,
+  "pagesCrawled": 45,
+  "chunksIngested": 312,
+  "vectorized": true,
+  "errors": [
+    "https://tailwindcss.com/broken-page: Navigation timeout"
+  ]
+}
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `success` | boolean | Whether the crawl completed |
+| `libraryId` | string | The library ID |
+| `pagesDiscovered` | number | Total pages found during link discovery |
+| `pagesCrawled` | number | Pages successfully crawled |
+| `chunksIngested` | number | Total chunks stored |
+| `vectorized` | boolean | Whether embeddings were generated |
+| `errors` | string[] | Optional. Per-page errors encountered during crawling |
+
+### Example
+
+```bash
+curl -X POST https://jeremy-app.ian-muench.workers.dev/api/crawl \
+  -H "Authorization: Bearer jrmy_your_admin_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "libraryId": "nextjs",
+    "name": "Next.js",
+    "urls": ["https://nextjs.org/docs"],
+    "replace": true
+  }'
+```
+
+### Link Discovery
+
+When you provide a single URL, the crawler:
+
+1. Navigates to the page and waits for it to fully render
+2. Extracts all same-origin links (excluding anchors, images, and assets)
+3. Crawls up to 150 discovered pages
+4. Strips navigation, footers, sidebars, and other non-content elements
+
+If you provide multiple URLs, each URL is crawled directly without discovery.
+
+### Errors
+
+| Status | Description |
+| --- | --- |
+| 400 | Missing required fields, or no content could be extracted |
+| 401 | Missing or insufficient auth (requires admin API key or session) |
+| 500 | Internal crawl error |

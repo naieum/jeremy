@@ -1,0 +1,84 @@
+---
+title: Data Flow
+description: How documentation moves through the ingestion and query pipelines.
+---
+
+Jeremy has two main data pipelines: ingestion (getting documentation into the system) and query (searching documentation).
+
+## Ingestion Pipeline
+
+When you ingest a library, the following steps occur:
+
+```
+Source URL
+  → Fetch / Crawl
+    → Extract Content
+      → Chunk (~500 words)
+        → Store chunks in D1
+          → Generate embeddings (Workers AI)
+            → Upsert vectors to Vectorize
+              → Backup raw chunks to R2
+```
+
+### 1. Fetch or Crawl
+
+Depending on the source type:
+
+- **llms.txt** -- fetches the `llms.txt` file, parses the listed URLs, and fetches each documentation page via HTTP.
+- **Web URL** -- uses Browser Rendering (headless Chromium) to load the page, executing JavaScript to capture dynamically rendered content.
+
+### 2. Extract Content
+
+Raw HTML is converted to clean text. Navigation, footers, and other non-documentation elements are stripped.
+
+### 3. Chunk
+
+The extracted content is split into chunks of approximately 500 words. Chunks respect heading boundaries where possible so that each chunk covers a coherent topic.
+
+### 4. Store in D1
+
+Each chunk is inserted into the `chunks` table with its title, content, source URL, and token count. The `libraries` table is updated with the total chunk count.
+
+### 5. Generate Embeddings
+
+Each chunk's text is sent to Workers AI using the `@cf/baai/bge-base-en-v1.5` model. This returns a 768-dimension vector for each chunk. Chunks are processed in batches of up to 100 texts per API call.
+
+### 6. Upsert to Vectorize
+
+The generated vectors are upserted into the Vectorize index, keyed by chunk ID and tagged with the library ID for filtered searches.
+
+### 7. Backup to R2
+
+Raw chunk data is written to R2 as a backup, enabling recovery without re-ingesting from the source.
+
+## Query Pipeline
+
+When an AI assistant or API client searches for documentation:
+
+```
+Search query
+  → Generate query embedding (Workers AI)
+    → Vectorize similarity search (filtered by libraryId)
+      → Fetch full chunks from D1
+        → Return ranked results
+```
+
+### 1. Generate Query Embedding
+
+The search query text is sent to Workers AI (`@cf/baai/bge-base-en-v1.5`) to produce a 768-dimension vector.
+
+### 2. Vector Similarity Search
+
+The query vector is compared against stored vectors in Vectorize using cosine similarity. The search is filtered by `libraryId` so results only come from the requested library.
+
+### 3. Fetch Full Chunks
+
+The top matching chunk IDs are used to fetch full content from D1, including title, content, and source URL.
+
+### 4. Return Results
+
+Results are returned ranked by similarity score, with each result containing the chunk content, relevance score, title, and source URL.
+
+## Fallback: Keyword Search
+
+If Vectorize is unavailable, Jeremy falls back to keyword-based scoring. The query is tokenized and matched against chunk content in D1 using text comparison. This provides degraded but functional search without vector embeddings.

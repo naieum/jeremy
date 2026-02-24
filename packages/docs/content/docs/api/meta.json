@@ -1,0 +1,4 @@
+{
+  "title": "API Reference",
+  "pages": ["index", "search", "context", "ingest", "ingest-url", "crawl", "embed", "keys", "libraries"]
+}

@@ -1,0 +1,59 @@
+name: Build Hosted Docs
+
+on:
+  repository_dispatch:
+    types: [build-docs]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: packages/docs-template
+
+      - name: Fetch chunks from Jeremy API
+        env:
+          JEREMY_API_URL: ${{ secrets.JEREMY_API_URL }}
+          JEREMY_BUILD_KEY: ${{ secrets.JEREMY_BUILD_KEY }}
+          LIBRARY_ID: ${{ github.event.client_payload.libraryId }}
+          SUBDOMAIN: ${{ github.event.client_payload.subdomain }}
+          SITE_ID: ${{ github.event.client_payload.siteId }}
+        run: |
+          node scripts/generate-docs.js
+
+      - name: Build docs
+        env:
+          LIBRARY_NAME: ${{ github.event.client_payload.subdomain }}
+        run: npm run build
+        working-directory: packages/docs-template
+
+      - name: Upload to R2
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          SUBDOMAIN: ${{ github.event.client_payload.subdomain }}
+        run: |
+          npx wrangler r2 object put "jeremy-docs/docs/${SUBDOMAIN}/" \
+            --file packages/docs-template/out/ \
+            --recursive
+
+      - name: Update site status
+        env:
+          JEREMY_API_URL: ${{ secrets.JEREMY_API_URL }}
+          JEREMY_BUILD_KEY: ${{ secrets.JEREMY_BUILD_KEY }}
+          LIBRARY_ID: ${{ github.event.client_payload.libraryId }}
+          SITE_ID: ${{ github.event.client_payload.siteId }}
+        run: |
+          curl -X POST "${JEREMY_API_URL}/api/libraries/${LIBRARY_ID}/docs/build-complete" \
+            -H "Authorization: Bearer ${JEREMY_BUILD_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "{\"siteId\": \"${SITE_ID}\", \"status\": \"live\"}"

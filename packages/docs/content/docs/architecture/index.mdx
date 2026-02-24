@@ -1,0 +1,59 @@
+---
+title: Architecture
+description: System overview of Jeremy's components and how they fit together.
+---
+
+Jeremy is a monorepo with three packages that share a common Cloudflare Workers backend.
+
+## Monorepo Structure
+
+```
+packages/
+  app/     # Web application (frontend + API)
+  mcp/     # MCP server
+  cli/     # Command-line interface
+```
+
+## Components
+
+### Frontend
+
+React 19 with TanStack Router. Provides the dashboard for managing libraries, API keys, and user accounts. Deployed as static assets served by the Workers application.
+
+### Backend (Workers)
+
+A Cloudflare Workers application that handles:
+
+- REST API for library management, search, and ingestion
+- Authentication via Better Auth (email/password, GitHub, Google)
+- Documentation ingestion and chunking
+- Embedding generation and vector storage
+
+### D1 (SQLite)
+
+Stores all structured data: user accounts, sessions, API keys, library metadata, and documentation chunks. See [Database Schema](/docs/self-hosting/database) for full details.
+
+### Vectorize
+
+Cloudflare's vector database. Stores 768-dimension embeddings for each documentation chunk and performs cosine similarity searches for semantic queries.
+
+### R2 (Object Storage)
+
+S3-compatible storage used to back up raw chunk data during ingestion.
+
+### Workers AI
+
+Generates vector embeddings using the `@cf/baai/bge-base-en-v1.5` model. Used during both ingestion (embedding chunks) and querying (embedding the search query).
+
+### Browser Rendering
+
+Headless Chromium via Puppeteer, running on Cloudflare. Used to crawl JavaScript-rendered documentation pages that can't be fetched with simple HTTP requests.
+
+### Better Auth
+
+Handles user authentication with support for email/password, GitHub OAuth, and Google OAuth. Manages sessions, accounts, and email verification.
+
+## Next Steps
+
+- [Data Flow](/docs/architecture/data-flow) -- how documentation moves through the system.
+- [Infrastructure](/docs/architecture/infrastructure) -- deep dive into each Cloudflare service.

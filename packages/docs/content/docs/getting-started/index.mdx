@@ -1,0 +1,71 @@
+---
+title: Quickstart
+description: Get Jeremy up and running in 5 minutes.
+---
+
+This guide walks you through creating an account, installing the CLI, ingesting your first library, and querying it via MCP.
+
+## 1. Create an Account
+
+Go to the [Jeremy Dashboard](https://jeremy-app.ian-muench.workers.dev) and sign up for an account.
+
+## 2. Create an API Key
+
+In the dashboard, navigate to **API Keys** and create a new key. Copy the key -- it will look like `jrmy_` followed by a long hex string. You won't be able to see it again.
+
+## 3. Install the CLI
+
+```bash
+npm install -g @jeremy/cli
+```
+
+## 4. Configure the CLI
+
+Point the CLI at your Jeremy instance and set your API key:
+
+```bash
+jeremy config set endpoint https://jeremy-app.ian-muench.workers.dev
+jeremy config set api-key jrmy_your_api_key_here
+```
+
+## 5. Ingest Your First Library
+
+Ingest a library using its `llms.txt` file:
+
+```bash
+jeremy add --name react --id react --llms-txt https://react.dev/llms.txt
+```
+
+The CLI will fetch the documentation, chunk it, and upload it to your Jeremy instance.
+
+## 6. Query via MCP
+
+Install the MCP server:
+
+```bash
+npm install -g @jeremy/mcp
+```
+
+Add it to your Claude Code settings (`.claude/settings.json` or global settings):
+
+```json
+{
+  "mcpServers": {
+    "jeremy": {
+      "command": "jeremy-mcp",
+      "env": {
+        "JEREMY_API_URL": "https://jeremy-app.ian-muench.workers.dev",
+        "JEREMY_API_KEY": "jrmy_your_api_key_here"
+      }
+    }
+  }
+}
+```
+
+Now when you use Claude Code, it can call `resolve-library-id` and `query-docs` to look up documentation from your ingested libraries.
+
+## Next Steps
+
+- [Installation details](/docs/getting-started/installation) -- full setup for the CLI and MCP server.
+- [Ingest your first library](/docs/getting-started/first-library) -- learn about the different ingestion methods.
+- [CLI reference](/docs/cli) -- all available CLI commands.

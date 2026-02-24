@@ -1,0 +1,47 @@
+---
+title: Search
+description: Search for documentation libraries by name.
+---
+
+## GET /api/search
+
+Find libraries by name using fuzzy matching. Returns up to 10 results.
+
+**Auth:** `read` API key
+
+### Query Parameters
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `libraryName` | string | Yes | Library name to search for (fuzzy match against name and ID) |
+| `query` | string | No | Additional query context (reserved for future use) |
+
+### Response
+
+```json
+{
+  "libraries": [
+    {
+      "id": "react",
+      "name": "React",
+      "description": "A JavaScript library for building user interfaces",
+      "version": "19.0.0",
+      "chunkCount": 142
+    }
+  ]
+}
+```
+
+### Example
+
+```bash
+curl "https://jeremy-app.ian-muench.workers.dev/api/search?libraryName=react" \
+  -H "Authorization: Bearer jrmy_your_api_key_here"
+```
+
+### Errors
+
+| Status | Description |
+| --- | --- |
+| 400 | `libraryName` parameter is missing |
+| 401 | Missing or invalid API key |

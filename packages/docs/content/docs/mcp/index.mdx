@@ -1,0 +1,33 @@
+---
+title: MCP Server
+description: Integrate Jeremy with AI assistants using the Model Context Protocol.
+---
+
+Jeremy includes a Model Context Protocol (MCP) server that integrates with AI assistants like Claude Code. The MCP server connects to your Jeremy instance and exposes tools for searching and querying your ingested documentation libraries.
+
+## What is MCP?
+
+The [Model Context Protocol](https://modelcontextprotocol.io) is an open standard for connecting AI assistants to external data sources and tools. When you run the Jeremy MCP server, any MCP-compatible AI assistant can look up documentation from your ingested libraries in real time.
+
+## How It Works
+
+The MCP server acts as a bridge between your AI assistant and your Jeremy instance:
+
+1. The AI assistant connects to the MCP server on startup.
+2. When the assistant needs documentation, it calls one of Jeremy's MCP tools.
+3. The MCP server forwards the request to your Jeremy API.
+4. Results are returned to the assistant as context for its response.
+
+## Available Tools
+
+The MCP server exposes two tools:
+
+- **`resolve-library-id`** -- search for a library by name and get its ID.
+- **`query-docs`** -- query a specific library's documentation using semantic search.
+
+See the [Tools Reference](/docs/mcp/tools) for full details on inputs and outputs.
+
+## Next Steps
+
+- [Setup](/docs/mcp/setup) -- install and configure the MCP server.
+- [Tools Reference](/docs/mcp/tools) -- detailed documentation for each MCP tool.

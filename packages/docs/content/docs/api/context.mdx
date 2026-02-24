@@ -1,0 +1,61 @@
+---
+title: Context
+description: Query documentation chunks using semantic search.
+---
+
+## GET /api/context
+
+Retrieve relevant documentation chunks for a query. Uses vector embeddings for semantic search, with automatic fallback to keyword matching if Vectorize is unavailable.
+
+**Auth:** `read` API key
+
+### Query Parameters
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `libraryId` | string | Yes | | The library to search within |
+| `query` | string | Yes | | The search query |
+| `topK` | number | No | 10 | Maximum number of chunks to return |
+
+### Response
+
+```json
+{
+  "chunks": [
+    {
+      "id": "react:42",
+      "title": "useState Hook",
+      "content": "useState is a React Hook that lets you add a state variable...",
+      "url": "https://react.dev/reference/react/useState",
+      "tokenCount": 450
+    }
+  ],
+  "libraryId": "react",
+  "query": "how to use state"
+}
+```
+
+When the response falls back to keyword matching (because Vectorize search failed), the response includes a `fallback` field:
+
+```json
+{
+  "chunks": [...],
+  "libraryId": "react",
+  "query": "how to use state",
+  "fallback": true
+}
+```
+
+### Example
+
+```bash
+curl "https://jeremy-app.ian-muench.workers.dev/api/context?libraryId=react&query=useState+hook&topK=5" \
+  -H "Authorization: Bearer jrmy_your_api_key_here"
+```
+
+### Errors
+
+| Status | Description |
+| --- | --- |
+| 400 | `libraryId` or `query` parameter is missing |
+| 401 | Missing or invalid API key |

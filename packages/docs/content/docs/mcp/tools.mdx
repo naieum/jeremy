@@ -1,0 +1,92 @@
+---
+title: Tools Reference
+description: Reference documentation for the Jeremy MCP tools.
+---
+
+The Jeremy MCP server exposes two tools to AI assistants. Use `resolve-library-id` first to find the correct library, then `query-docs` to search its documentation.
+
+## resolve-library-id
+
+Searches for libraries matching a given name. Use this to find the correct library ID before querying documentation.
+
+### Input
+
+```json
+{
+  "libraryName": "react"
+}
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `libraryName` | `string` | Yes | The name of the library to search for |
+
+### Output
+
+Returns an array of matching libraries:
+
+```json
+[
+  {
+    "id": "react",
+    "name": "react",
+    "version": "19.0.0",
+    "description": "A JavaScript library for building user interfaces"
+  }
+]
+```
+
+Each result includes:
+
+- `id` -- the library ID to use with `query-docs`.
+- `name` -- the library's display name.
+- `version` -- the library version, if available.
+- `description` -- a short description of the library.
+
+## query-docs
+
+Queries a library's documentation using semantic search. Returns relevant chunks ranked by relevance.
+
+### Input
+
+```json
+{
+  "libraryId": "react",
+  "query": "how to use useEffect cleanup",
+  "topic": "hooks"
+}
+```
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `libraryId` | `string` | Yes | The library ID returned by `resolve-library-id` |
+| `query` | `string` | Yes | The search query |
+| `topic` | `string` | No | Optional topic to narrow the search |
+
+### Output
+
+Returns an array of documentation chunks ranked by relevance:
+
+```json
+[
+  {
+    "content": "## Cleaning up an Effect\n\nSome Effects need to specify how to stop, undo, or clean up whatever they were doing...",
+    "score": 0.92,
+    "title": "useEffect",
+    "url": "https://react.dev/reference/react/useEffect"
+  }
+]
+```
+
+Each result includes:
+
+- `content` -- the documentation text for this chunk.
+- `score` -- relevance score between 0 and 1.
+- `title` -- the title or heading for this chunk.
+- `url` -- the source URL of the documentation.
+
+### How It Works
+
+The `query-docs` tool generates a vector embedding of your query using Workers AI and performs a cosine similarity search against the library's stored embeddings in Vectorize. The top results are enriched with full content from D1 and returned ranked by relevance score.
+
+The optional `topic` parameter further filters results by matching against chunk titles and content, narrowing the search to a specific area of the documentation.

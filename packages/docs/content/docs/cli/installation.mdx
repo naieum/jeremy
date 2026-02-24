@@ -1,0 +1,48 @@
+---
+title: Installation
+description: Install and configure the Jeremy CLI.
+---
+
+## Install
+
+Install the CLI globally via npm:
+
+```bash
+npm install -g @jeremy/cli
+```
+
+This provides the `jeremy` command.
+
+## Configure
+
+Point the CLI at your Jeremy instance:
+
+```bash
+jeremy config set endpoint https://jeremy-app.ian-muench.workers.dev
+```
+
+Set your API key (generate one from the [Dashboard](https://jeremy-app.ian-muench.workers.dev)):
+
+```bash
+jeremy config set api-key jrmy_your_api_key_here
+```
+
+Configuration is stored in `~/.jeremy/config.json`.
+
+## Verify
+
+Check that the CLI can reach your instance:
+
+```bash
+jeremy list
+```
+
+This should return your existing libraries or an empty list if you haven't ingested anything yet.
+
+## Updating
+
+To update to the latest version:
+
+```bash
+npm update -g @jeremy/cli
+```

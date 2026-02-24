@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/Sohne-Buch.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/Sohne-BuchKursiv.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/Sohne-Kraftig.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('/fonts/Sohne-Dreiviertelfett.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg: #0a1628;
+  --bg-surface: #111d33;
+  --bg-hover: #1a2d4a;
+  --text: #f5f0e8;
+  --text-muted: #8a9ab5;
+  --border: #1a2d4a;
+  --accent: #f5f0e8;
+  --accent-hover: #ede6d8;
+  --danger: #e85454;
+  --success: #4ade80;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace;
+}
+
+[data-theme="blue-inverse"] {
+  --bg: #f5f0e8;
+  --bg-surface: #ede6d8;
+  --bg-hover: #d4cdb8;
+  --text: #0a1628;
+  --text-muted: #5a6478;
+  --border: #c4bda8;
+  --accent: #0a1628;
+  --accent-hover: #111d33;
+}
+
+[data-theme="cream"] {
+  --bg: #f5f0e8;
+  --bg-surface: #ede6d8;
+  --bg-hover: #d4cdb8;
+  --text: #0a1628;
+  --text-muted: #5a6478;
+  --border: #d4cdb8;
+  --accent: #0a1628;
+  --accent-hover: #111d33;
+}
+
+[data-theme="cream-inverse"] {
+  --bg: #0a1628;
+  --bg-surface: #111d33;
+  --bg-hover: #1a2d4a;
+  --text: #f5f0e8;
+  --text-muted: #8a9ab5;
+  --border: #1a2d4a;
+  --accent: #f5f0e8;
+  --accent-hover: #ede6d8;
+}
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--bg-surface);
+  --color-hover: var(--bg-hover);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --font-family-mono: var(--font-mono);
+  --font-family-sans: 'Sohne', system-ui, -apple-system, sans-serif;
+}

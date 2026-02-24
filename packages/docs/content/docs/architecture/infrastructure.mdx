@@ -1,0 +1,57 @@
+---
+title: Infrastructure
+description: Deep dive into the Cloudflare services that power Jeremy.
+---
+
+Jeremy runs entirely on Cloudflare's developer platform. This page covers each service, how Jeremy uses it, and relevant configuration details.
+
+## Workers
+
+Cloudflare Workers provides the serverless compute layer for Jeremy's API and frontend.
+
+- **0ms cold start** -- Workers run on Cloudflare's edge network with no cold start penalty.
+- **Handles all HTTP requests** -- API routes, authentication, static asset serving, and ingestion orchestration.
+- **Compatibility** -- requires the `nodejs_compat` compatibility flag for Node.js API support.
+
+## D1
+
+D1 is Cloudflare's distributed SQLite database.
+
+- **Stores structured data** -- libraries, documentation chunks, user accounts, sessions, and API keys.
+- **SQLite semantics** -- full SQL support with transactions, indexes, and foreign keys.
+- **Migrations** -- schema changes are applied with `wrangler d1 migrations apply`.
+
+See [Database Schema](/docs/self-hosting/database) for the complete table definitions.
+
+## Vectorize
+
+Vectorize is Cloudflare's vector database for similarity search.
+
+- **768-dimension vectors** -- matches the output of the `bge-base-en-v1.5` embedding model.
+- **Cosine similarity** -- vectors are compared using cosine distance for semantic matching.
+- **Metadata filtering** -- queries are filtered by `libraryId` so searches are scoped to a single library.
+- **Index configuration** -- created with `wrangler vectorize create docs-index --dimensions=768 --metric=cosine`.
+
+## Workers AI
+
+Workers AI runs machine learning models on Cloudflare's infrastructure.
+
+- **Model** -- `@cf/baai/bge-base-en-v1.5`, a text embedding model that produces 768-dimension vectors.
+- **Batch processing** -- supports embedding up to 100 texts per API call, used during bulk ingestion.
+- **Used for both ingestion and query** -- the same model embeds documentation chunks during ingestion and search queries at query time, ensuring consistent vector representations.
+
+## R2
+
+R2 is Cloudflare's S3-compatible object storage.
+
+- **Raw chunk backup** -- stores the original chunk data from each ingestion run.
+- **Recovery** -- enables restoring chunks without re-fetching from the documentation source.
+- **S3-compatible API** -- accessible via the Workers R2 binding or standard S3 clients.
+
+## Browser Rendering
+
+Browser Rendering provides headless Chromium instances on Cloudflare.
+
+- **Puppeteer integration** -- accessed via the `@cloudflare/puppeteer` package using the `BROWSER` binding.
+- **JavaScript rendering** -- loads documentation pages with full JavaScript execution, capturing content that isn't available in the raw HTML.
+- **Used for URL ingestion** -- when ingesting from a web URL (as opposed to `llms.txt`), Browser Rendering ensures dynamically rendered content is captured.

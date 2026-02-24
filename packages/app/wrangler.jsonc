@@ -1,0 +1,58 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "jeremy-app",
+  "compatibility_date": "2026-02-19",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "src/worker-entry.ts",
+  "observability": { "enabled": true },
+
+  "triggers": {
+    "crons": ["0 3 * * *"]
+  },
+
+  "routes": [
+    { "pattern": "jeremy.khuur.dev", "custom_domain": true }
+  ],
+
+  "vars": {
+    "BASE_URL": "https://jeremy.khuur.dev",
+    "ADMIN_USER_ID": "mhiCVp9HIlAaVHjGuT5GdwRvIXQNlBj7"
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "jeremy-db",
+      "database_id": "64e85742-60de-4156-a4ed-88edda8f3b42"
+    }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "DOCS_BUCKET",
+      "bucket_name": "jeremy-docs"
+    }
+  ],
+
+  "vectorize": [
+    {
+      "binding": "VECTORIZE",
+      "index_name": "docs-index"
+    }
+  ],
+
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "a61c7af8c7e44c0eb663ea966a5b2adc"
+    }
+  ],
+
+  "ai": {
+    "binding": "AI"
+  },
+
+  "browser": {
+    "binding": "BROWSER"
+  }
+}

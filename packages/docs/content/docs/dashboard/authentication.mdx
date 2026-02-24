@@ -1,0 +1,34 @@
+---
+title: Authentication
+description: Sign in to the Jeremy dashboard with email/password, GitHub, or Google.
+---
+
+The Jeremy dashboard requires authentication. You can create an account and sign in using any of the following methods.
+
+## Sign-in options
+
+### Email and password
+
+1. Navigate to your Jeremy instance (e.g., `https://jeremy-app.ian-muench.workers.dev/login`)
+2. To create a new account, click **Sign up** and enter your name, email, and password
+3. To sign in to an existing account, enter your email and password and click **Sign In**
+
+### GitHub OAuth
+
+Click the **GitHub** button on the login page. You will be redirected to GitHub to authorize the application, then returned to the dashboard.
+
+### Google OAuth
+
+Click the **Google** button on the login page. You will be redirected to Google to authorize the application, then returned to the dashboard.
+
+## Session management
+
+Jeremy uses [Better Auth](https://www.better-auth.com/) for authentication. Sessions are cookie-based and managed automatically by the server. Once signed in, your session persists across page reloads until it expires or you sign out.
+
+If your session expires, you will be redirected to the login page the next time you access the dashboard.
+
+## Access control
+
+All dashboard routes are protected. The `/dashboard` layout checks for a valid session before rendering any child page. Unauthenticated requests are redirected to `/login`.
+
+API endpoints accept either a session cookie (from the dashboard) or an API key in the `Authorization` header. See [API Keys](/docs/dashboard/api-keys) for details on API key authentication.

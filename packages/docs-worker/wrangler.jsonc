@@ -1,0 +1,26 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "jeremy-docs-worker",
+  "compatibility_date": "2026-02-19",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "src/index.ts",
+
+  "routes": [
+    { "pattern": "*.docs.jeremy.dev/*", "zone_name": "jeremy.dev" }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "DOCS_BUCKET",
+      "bucket_name": "jeremy-docs"
+    }
+  ],
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "jeremy-db",
+      "database_id": "64e85742-60de-4156-a4ed-88edda8f3b42"
+    }
+  ]
+}

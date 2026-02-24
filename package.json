@@ -1,0 +1,17 @@
+{
+  "name": "jeremy",
+  "private": true,
+  "workspaces": [
+    "packages/app",
+    "packages/mcp",
+    "packages/cli",
+    "packages/docs"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=packages/app",
+    "build": "npm run build --workspace=packages/app",
+    "deploy": "npm run deploy --workspace=packages/app",
+    "docs:dev": "npm run dev --workspace=packages/docs",
+    "docs:build": "npm run build --workspace=packages/docs"
+  }
+}

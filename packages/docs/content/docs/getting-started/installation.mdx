@@ -1,0 +1,88 @@
+---
+title: Installation
+description: Install and configure the Jeremy CLI and MCP server.
+---
+
+## CLI
+
+The CLI is the primary tool for ingesting and managing libraries.
+
+### Install
+
+```bash
+npm install -g @jeremy/cli
+```
+
+This provides the `jeremy` command.
+
+### Configure
+
+Set the endpoint for your Jeremy instance:
+
+```bash
+jeremy config set endpoint https://jeremy-app.ian-muench.workers.dev
+```
+
+Set your API key (generate one from the [Dashboard](https://jeremy-app.ian-muench.workers.dev)):
+
+```bash
+jeremy config set api-key jrmy_your_api_key_here
+```
+
+Configuration is stored in `~/.jeremy/config.json`.
+
+### Verify
+
+Check that the CLI can reach your instance:
+
+```bash
+jeremy list
+```
+
+This should return an empty list or your existing libraries.
+
+## MCP Server
+
+The MCP server lets AI assistants like Claude Code query your ingested documentation.
+
+### Install
+
+```bash
+npm install -g @jeremy/mcp
+```
+
+This provides the `jeremy-mcp` command.
+
+### Configure in Claude Code
+
+Add the Jeremy MCP server to your Claude Code settings. You can add it to either your project settings (`.claude/settings.json`) or global settings:
+
+```json
+{
+  "mcpServers": {
+    "jeremy": {
+      "command": "jeremy-mcp",
+      "env": {
+        "JEREMY_API_URL": "https://jeremy-app.ian-muench.workers.dev",
+        "JEREMY_API_KEY": "jrmy_your_api_key_here"
+      }
+    }
+  }
+}
+```
+
+### Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `JEREMY_API_URL` | Base URL of your Jeremy instance | `https://jeremy-app.ian-muench.workers.dev` |
+| `JEREMY_API_KEY` | Your API key for authentication | (none) |
+
+### MCP Tools
+
+Once connected, the MCP server exposes two tools to the AI assistant:
+
+- **`resolve-library-id`** -- search for a library by name and get its ID.
+- **`query-docs`** -- query documentation for a specific library by ID, with an optional topic filter.
+
+The AI assistant calls these tools automatically when it needs to look up library documentation.

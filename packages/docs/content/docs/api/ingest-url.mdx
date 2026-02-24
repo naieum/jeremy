@@ -1,0 +1,64 @@
+---
+title: Ingest URL
+description: Ingest documentation directly from a URL.
+---
+
+## POST /api/ingest-url
+
+A simplified ingestion endpoint. Provide a URL and Jeremy will fetch the content, chunk it, and ingest it automatically. Supports `llms.txt` files and plain web pages.
+
+If the library already exists, its chunks are replaced.
+
+**Auth:** session (dashboard login)
+
+### Request Body
+
+```json
+{
+  "libraryId": "my-lib",
+  "name": "My Library",
+  "description": "Optional description",
+  "sourceUrl": "https://example.com/llms.txt",
+  "sourceType": "llms_txt"
+}
+```
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `libraryId` | string | Yes | Unique identifier for the library |
+| `name` | string | Yes | Display name |
+| `description` | string | No | Library description |
+| `sourceUrl` | string | Yes | URL to fetch documentation from |
+| `sourceType` | string | Yes | Content type. Use `llms_txt` for llms.txt files, or another value for plain pages |
+
+### Response
+
+```json
+{
+  "success": true,
+  "libraryId": "my-lib",
+  "chunksIngested": 87,
+  "vectorized": true
+}
+```
+
+### Example
+
+```bash
+curl -X POST https://jeremy-app.ian-muench.workers.dev/api/ingest-url \
+  -H "Content-Type: application/json" \
+  -H "Cookie: your_session_cookie" \
+  -d '{
+    "libraryId": "react",
+    "name": "React",
+    "sourceUrl": "https://react.dev/llms.txt",
+    "sourceType": "llms_txt"
+  }'
+```
+
+### Errors
+
+| Status | Description |
+| --- | --- |
+| 400 | Missing required fields, or URL could not be fetched |
+| 401 | Not authenticated (session required) |
