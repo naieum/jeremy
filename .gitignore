@@ -27,5 +27,8 @@ playwright-report/
 test-results/
 packages/app/tests/auth-state/
 
+# Build caches
+.next/
+
 # Screenshots
 *.png
