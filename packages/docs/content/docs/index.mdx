@@ -1,9 +1,9 @@
 ---
 title: Introduction
-description: Jeremy is a self-hosted documentation RAG system that makes library docs queryable by AI assistants.
+description: Jeremy is a documentation RAG service that makes library docs queryable by AI coding assistants.
 ---
 
-Jeremy is a self-hosted documentation RAG (Retrieval-Augmented Generation) system built on Cloudflare Workers. It ingests library documentation and makes it queryable through semantic search, so AI coding assistants can look up accurate, up-to-date docs on demand.
+Jeremy is a documentation RAG (Retrieval-Augmented Generation) service that ingests library documentation and makes it queryable through semantic search, so AI coding assistants can look up accurate, up-to-date docs on demand.
 
 ## Why Jeremy?
 
@@ -11,32 +11,23 @@ AI assistants have knowledge cutoffs and can't access the latest documentation f
 
 - **Ingesting docs from any source** -- point it at an `llms.txt` file or a documentation URL, and Jeremy fetches, chunks, and embeds the content.
 - **Semantic search via vector embeddings** -- queries return the most relevant documentation chunks, not just keyword matches.
-- **Serving context to AI assistants** -- the MCP server integrates directly with Claude Code and other MCP-compatible tools, giving them access to your ingested docs.
+- **Serving context to AI assistants** -- the MCP server integrates directly with Claude Code and other MCP-compatible tools, giving them access to your indexed docs.
 
 ## Key Features
 
 - **MCP Server** -- an MCP (Model Context Protocol) server that AI assistants like Claude Code can use to query documentation in real time.
-- **CLI** -- a command-line tool for ingesting, listing, refreshing, and deleting libraries.
 - **Dashboard** -- a web UI for managing your account, API keys, and libraries.
 - **REST API** -- programmatic access to search, context retrieval, ingestion, and library management.
+- **200+ pre-indexed libraries** -- popular frameworks and tools are already indexed and ready to search.
 
 ## How It Works
 
-1. **Ingest** -- you provide a documentation source (an `llms.txt` URL or a web page URL). Jeremy fetches the content, splits it into chunks, and sends it to the server.
-2. **Embed** -- the server generates vector embeddings for each chunk using Cloudflare Workers AI and stores them in Cloudflare Vectorize.
-3. **Query** -- when an AI assistant needs documentation, it calls Jeremy's API (or MCP tools). Jeremy performs a semantic vector search and returns the most relevant chunks.
-
-## Architecture
-
-Jeremy runs entirely on Cloudflare's platform:
-
-- **Workers** -- handles API requests, authentication, and orchestration.
-- **D1** -- stores library metadata, user accounts, and API keys.
-- **Vectorize** -- stores and searches vector embeddings for documentation chunks.
-- **Workers AI** -- generates embeddings from documentation text.
+1. **Sign up** -- create an account at [jeremy.khuur.dev](https://jeremy.khuur.dev).
+2. **Connect** -- run one command to register the MCP server with Claude Code.
+3. **Search** -- when an AI assistant needs documentation, it calls Jeremy's MCP tools. Jeremy performs a semantic vector search and returns the most relevant chunks.
 
 ## Next Steps
 
-- [Get started in 5 minutes](/docs/getting-started) -- create an account, install the CLI, and ingest your first library.
-- [Install the CLI and MCP server](/docs/getting-started/installation) -- detailed setup instructions.
+- [Get started in 5 minutes](/docs/getting-started) -- create an account and connect Claude Code.
 - [Use the Dashboard](/docs/dashboard) -- manage libraries and API keys through the web UI.
+- [API Reference](/docs/api) -- programmatic access to all features.

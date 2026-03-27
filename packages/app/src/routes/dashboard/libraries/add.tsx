@@ -15,17 +15,34 @@ function AddLibraryPage() {
     sourceType: string;
     description: string;
   }) {
-    const res = await fetch("/api/ingest-url", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        libraryId: data.id,
-        name: data.name,
-        description: data.description,
-        sourceUrl: data.sourceUrl,
-        sourceType: data.sourceType,
-      }),
-    });
+    let res: Response;
+
+    if (data.sourceType === "crawl") {
+      res = await fetch("/api/crawl", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          libraryId: data.id,
+          name: data.name,
+          description: data.description,
+          urls: [data.sourceUrl],
+          replace: true,
+        }),
+      });
+    } else {
+      res = await fetch("/api/ingest-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          libraryId: data.id,
+          name: data.name,
+          description: data.description,
+          sourceUrl: data.sourceUrl,
+          sourceType: data.sourceType,
+        }),
+      });
+    }
+
     if (!res.ok) {
       const err = await res.json().catch(() => ({ error: "Unknown error" }));
       throw new Error((err as any).error || "Failed to ingest library");

@@ -4,10 +4,11 @@
  * Sends in small batches (200 chunks per request) to avoid payload limits.
  */
 
-const API_URL = "https://jeremy-app.ian-muench.workers.dev";
-const API_KEY = "jrmy_10eac3bb041a95da0cdc325e3f5e3bb5fcb9bfeb0a54e0d30f3b1d65cd11bfd5";
-const CONCURRENCY = 3;
+const API_URL = process.env.JEREMY_API_URL ?? "https://jeremy.khuur.dev";
+const API_KEY = process.env.JEREMY_API_KEY ?? "";
+const CONCURRENCY = 1;
 const MAX_CHUNKS_PER_REQUEST = 200;
+const DELAY_BETWEEN_LIBRARIES_MS = 7000; // ~8 requests/min to stay under 10/min rate limit
 const MAX_CONTENT_LENGTH = 4000; // chars per chunk content
 const MAX_LINKED_DOCS = 100; // max sub-docs to fetch from an llms.txt
 
@@ -79,16 +80,40 @@ const LIBRARIES: Library[] = [
   { id: "/colinhacks/zod", name: "Zod", url: "https://zod.dev/llms.txt", description: "TypeScript-first schema validation" },
   { id: "/effect-ts/effect", name: "Effect", url: "https://effect.website/llms.txt", description: "TypeScript library for complex programs" },
 
-  // AI / ML
-  { id: "/anthropics/anthropic", name: "Anthropic", url: "https://docs.anthropic.com/llms.txt", description: "Claude AI models and APIs" },
+  // AI / ML — LLM providers
   { id: "/openai/openai", name: "OpenAI", url: "https://platform.openai.com/docs/llms.txt", description: "GPT models and APIs" },
-  { id: "/vercel/ai", name: "AI SDK", url: "https://ai-sdk.dev/llms.txt", description: "TypeScript toolkit for AI apps" },
+  { id: "/mistralai/mistral", name: "Mistral", url: "https://docs.mistral.ai/llms.txt", description: "Open-weight LLM provider" },
+  { id: "/together-ai/together", name: "Together AI", url: "https://docs.together.ai/llms.txt", description: "Open-source model inference" },
+  { id: "/perplexity-ai/perplexity", name: "Perplexity", url: "https://docs.perplexity.ai/llms.txt", description: "AI search and reasoning API" },
+  { id: "/groq/groq", name: "Groq", url: "https://console.groq.com/llms.txt", description: "Fast LLM inference" },
+  { id: "/fireworks-ai/fireworks", name: "Fireworks AI", url: "https://docs.fireworks.ai/llms.txt", description: "Fast AI inference" },
+  { id: "/cohere-ai/cohere", name: "Cohere", url: "https://docs.cohere.com/llms.txt", description: "Enterprise AI platform" },
+  { id: "/replicate/replicate", name: "Replicate", url: "https://replicate.com/docs/llms.txt", description: "Run ML models via API" },
+  { id: "/amazon/aws", name: "AWS", url: "https://docs.aws.amazon.com/llms.txt", description: "Amazon Web Services (Bedrock, SageMaker, etc.)" },
+
+  // AI / ML — Frameworks & SDKs
   { id: "/modelcontextprotocol/mcp", name: "Model Context Protocol", url: "https://modelcontextprotocol.io/llms-full.txt", description: "Protocol for connecting AI to tools" },
-  { id: "/langchain-ai/langchainjs", name: "LangChain JS", url: "https://js.langchain.com/llms.txt", description: "LLM application framework (JS)" },
-  { id: "/langchain-ai/langchain", name: "LangChain Python", url: "https://python.langchain.com/llms.txt", description: "LLM application framework (Python)" },
+  { id: "/langchain-ai/langchain", name: "LangChain", url: "https://docs.langchain.com/llms.txt", description: "LLM application framework (JS + Python)" },
+  { id: "/run-llama/llamaindex", name: "LlamaIndex", url: "https://developers.llamaindex.ai/llms.txt", description: "Data framework for LLM apps" },
   { id: "/mastra-ai/mastra", name: "Mastra", url: "https://mastra.ai/llms.txt", description: "TypeScript AI agent framework" },
+  { id: "/jonathanellis/crewai", name: "CrewAI", url: "https://docs.crewai.com/llms.txt", description: "AI agent orchestration" },
+  { id: "/gradio-app/gradio", name: "Gradio", url: "https://www.gradio.app/llms.txt", description: "ML web demo builder" },
+  { id: "/unslothai/unsloth", name: "Unsloth", url: "https://unsloth.ai/docs/llms.txt", description: "Fast LLM fine-tuning" },
+
+  // AI / ML — Vector databases
   { id: "/pinecone-io/pinecone", name: "Pinecone", url: "https://docs.pinecone.io/llms.txt", description: "Vector database" },
-  { id: "/langfuse/langfuse", name: "Langfuse", url: "https://langfuse.com/llms.txt", description: "LLM observability platform" },
+  { id: "/weaviate/weaviate", name: "Weaviate", url: "https://docs.weaviate.io/llms.txt", description: "AI-native vector database" },
+  { id: "/chroma-core/chroma", name: "ChromaDB", url: "https://docs.trychroma.com/llms.txt", description: "Open-source embedding database" },
+  { id: "/qdrant/qdrant", name: "Qdrant", url: "https://qdrant.tech/llms.txt", description: "Vector similarity search engine" },
+
+  // AI / ML — Local inference
+  { id: "/lmstudio-ai/lmstudio", name: "LM Studio", url: "https://lmstudio.ai/llms.txt", description: "Run LLMs locally" },
+
+  // AI / ML — SDKs (with llms.txt)
+  { id: "/vercel/ai-sdk", name: "Vercel AI SDK", url: "https://ai-sdk.dev/llms.txt", description: "TypeScript toolkit for building AI applications" },
+
+  // AI / ML — Observability
+  { id: "/helicone-ai/helicone", name: "Helicone", url: "https://www.helicone.ai/llms.txt", description: "LLM observability" },
 
   // Payments / Services
   { id: "/stripe/stripe", name: "Stripe", url: "https://docs.stripe.com/llms.txt", description: "Payment processing platform" },
@@ -118,18 +143,72 @@ const LIBRARIES: Library[] = [
   { id: "/tinybird/tinybird", name: "Tinybird", url: "https://www.tinybird.co/docs/llms.txt", description: "Real-time analytics platform" },
   { id: "/mintlify/mintlify", name: "Mintlify", url: "https://mintlify.com/docs/llms.txt", description: "Documentation platform" },
   { id: "/elevenlabs/elevenlabs", name: "ElevenLabs", url: "https://elevenlabs.io/docs/llms.txt", description: "AI voice synthesis" },
-  { id: "/jonathanellis/crewai", name: "CrewAI", url: "https://docs.crewai.com/llms.txt", description: "AI agent orchestration" },
-  { id: "/gradio-app/gradio", name: "Gradio", url: "https://www.gradio.app/llms.txt", description: "ML web demo builder" },
-  { id: "/fireworks-ai/fireworks", name: "Fireworks AI", url: "https://docs.fireworks.ai/llms.txt", description: "Fast AI inference" },
-  { id: "/cohere-ai/cohere", name: "Cohere", url: "https://docs.cohere.com/llms.txt", description: "Enterprise AI platform" },
-  { id: "/replicate/replicate", name: "Replicate", url: "https://replicate.com/docs/llms.txt", description: "Run ML models via API" },
-  { id: "/helicone-ai/helicone", name: "Helicone", url: "https://www.helicone.ai/llms.txt", description: "LLM observability" },
   { id: "/liveblocks/liveblocks", name: "Liveblocks", url: "https://liveblocks.io/llms.txt", description: "Real-time collaboration infra" },
   { id: "/infisical/infisical", name: "Infisical", url: "https://infisical.com/docs/llms.txt", description: "Secret management" },
   { id: "/dubinc/dub", name: "Dub", url: "https://dub.co/docs/llms.txt", description: "Link management platform" },
   { id: "/nuxt/content", name: "Nuxt Content", url: "https://content.nuxt.com/llms.txt", description: "Git-based CMS for Nuxt" },
   { id: "/microsoft/genaiscript", name: "GenAIScript", url: "https://microsoft.github.io/genaiscript/llms.txt", description: "Microsoft's GenAI scripting" },
   { id: "/comfyanonymous/comfyui", name: "ComfyUI", url: "https://docs.comfy.org/llms.txt", description: "Modular Stable Diffusion GUI" },
+
+  // CSS / Styling (with llms.txt)
+  { id: "/chakra-ui/panda-css", name: "Panda CSS", url: "https://panda-css.com/llms.txt", description: "CSS-in-JS with build-time generated styles" },
+  { id: "/unocss/unocss", name: "UnoCSS", url: "https://unocss.dev/llms.txt", description: "Instant on-demand atomic CSS engine" },
+
+  // Animation (with llms.txt)
+  { id: "/gsap/gsap", name: "GSAP", url: "https://gsap.com/llms.txt", description: "Professional-grade animation library" },
+
+  // Monorepo / DX (with llms.txt)
+  { id: "/nrwl/nx", name: "Nx", url: "https://nx.dev/llms.txt", description: "Smart monorepo build system" },
+
+  // Databases (with llms.txt)
+  { id: "/kysely-org/kysely", name: "Kysely", url: "https://kysely.dev/llms.txt", description: "Type-safe TypeScript SQL query builder" },
+
+  // ── Batch 3: Additional libraries with llms.txt ──────────────────
+
+  // Frontend
+  { id: "/preactjs/preact", name: "Preact", url: "https://preactjs.com/llms.txt", description: "Fast 3kB React alternative" },
+
+  // ORMs
+  { id: "/typeorm/typeorm", name: "TypeORM", url: "https://typeorm.io/llms.txt", description: "TypeScript ORM for Node.js" },
+  { id: "/mikro-orm/mikro-orm", name: "MikroORM", url: "https://mikro-orm.io/llms.txt", description: "TypeScript data-mapper ORM" },
+
+  // Search
+  { id: "/meilisearch/meilisearch", name: "Meilisearch", url: "https://www.meilisearch.com/docs/llms.txt", description: "Lightning-fast search engine" },
+  { id: "/algolia/algolia", name: "Algolia", url: "https://www.algolia.com/doc/llms.txt", description: "Search and discovery API" },
+
+  // Analytics / Observability
+  { id: "/posthog/posthog", name: "PostHog", url: "https://posthog.com/llms.txt", description: "Product analytics platform" },
+  { id: "/datadog/datadog", name: "Datadog", url: "https://docs.datadoghq.com/llms.txt", description: "Monitoring and observability platform" },
+
+  // Background Jobs / Workflows
+  { id: "/taskforcesh/bullmq", name: "BullMQ", url: "https://docs.bullmq.io/llms.txt", description: "Node.js message queue based on Redis" },
+  { id: "/temporalio/temporal", name: "Temporal", url: "https://docs.temporal.io/llms.txt", description: "Durable execution workflow engine" },
+
+  // CMS
+  { id: "/payloadcms/payload", name: "Payload CMS", url: "https://payloadcms.com/llms.txt", description: "Headless CMS built with Next.js" },
+
+  // AI / ML
+  { id: "/berriai/litellm", name: "LiteLLM", url: "https://docs.litellm.ai/llms.txt", description: "Unified LLM API proxy" },
+  { id: "/jxnl/instructor", name: "Instructor", url: "https://python.useinstructor.com/llms.txt", description: "Structured outputs from LLMs" },
+
+  // Auth / Identity
+  { id: "/auth0/auth0", name: "Auth0", url: "https://auth0.com/docs/llms.txt", description: "Identity platform for developers" },
+
+  // Communications / APIs
+  { id: "/twilio/twilio", name: "Twilio", url: "https://www.twilio.com/docs/llms.txt", description: "Cloud communications platform" },
+  { id: "/shopify/shopify", name: "Shopify Dev", url: "https://shopify.dev/llms.txt", description: "E-commerce platform and APIs" },
+  { id: "/plaid/plaid", name: "Plaid", url: "https://plaid.com/docs/llms.txt", description: "Financial data API" },
+
+  // Real-time
+  { id: "/ably/ably", name: "Ably", url: "https://ably.com/llms.txt", description: "Real-time messaging infrastructure" },
+
+  // Editors / Tools
+  { id: "/zed-industries/zed", name: "Zed", url: "https://zed.dev/llms.txt", description: "High-performance code editor" },
+
+  // Platforms
+  { id: "/github/docs", name: "GitHub Docs", url: "https://docs.github.com/llms.txt", description: "GitHub platform documentation" },
+  { id: "/railwayapp/railway", name: "Railway", url: "https://railway.com/llms.txt", description: "Infrastructure platform for developers" },
+  { id: "/render/render", name: "Render", url: "https://docs.render.com/llms.txt", description: "Cloud application platform" },
 ];
 
 // ── Chunking ───────────────────────────────────────────────────────
@@ -265,6 +344,11 @@ async function sendChunks(lib: Library, allChunks: Chunk[]): Promise<{ success: 
       const err = await res.text();
       return { success: false, error: `API ${res.status}: ${err.slice(0, 200)}` };
     }
+
+    // Delay between batch requests to stay under rate limit
+    if (i + MAX_CHUNKS_PER_REQUEST < allChunks.length) {
+      await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_LIBRARIES_MS));
+    }
   }
   return { success: true };
 }
@@ -343,6 +427,11 @@ async function main() {
       })
     );
     results.push(...batchResults);
+
+    // Delay between libraries to avoid rate limiting (10 writes/min)
+    if (i + CONCURRENCY < LIBRARIES.length) {
+      await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_LIBRARIES_MS));
+    }
   }
 
   const succeeded = results.filter(r => r.success);

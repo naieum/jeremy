@@ -1,7 +1,6 @@
 {
-  "name": "@jeremy/mcp",
+  "name": "jeremy-mcp",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
   "bin": {
     "jeremy-mcp": "./dist/index.js"

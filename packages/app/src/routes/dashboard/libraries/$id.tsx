@@ -139,7 +139,7 @@ function LibraryDetailPage() {
           ))}
           {chunks.length === 0 && (
             <p className="px-4 py-8 text-center text-sm text-muted">
-              No chunks. Use the CLI to ingest documentation.
+              No chunks yet. Add docs via the source URL or API.
             </p>
           )}
         </div>
@@ -421,7 +421,7 @@ function DocSiteSection({ libraryId }: { libraryId: string }) {
         {!site?.exists ? (
           <div>
             <p className="text-sm text-muted mb-3">
-              Publish documentation at a subdomain of docs.jeremy.dev. Requires a verified repo connection.
+              Publish hosted documentation for this library. Requires a verified repo connection.
             </p>
             <button
               onClick={handlePublish}

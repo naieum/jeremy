@@ -5,6 +5,8 @@ export const Route = createFileRoute("/docs")({
 });
 
 function DocsPage() {
+  const apiUrl = typeof window !== "undefined" ? window.location.origin : "https://jeremy.khuur.dev";
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
       <Link to="/" className="text-sm text-muted hover:text-text transition-colors">
@@ -12,7 +14,7 @@ function DocsPage() {
       </Link>
 
       <h1 className="mt-6 text-2xl font-bold text-text">Getting started</h1>
-      <p className="mt-2 text-sm text-muted">Set up jeremy in a few minutes.</p>
+      <p className="mt-2 text-sm text-muted">Set up Jeremy in a few minutes.</p>
 
       <div className="mt-10 space-y-8 text-sm text-muted leading-relaxed">
         <section>
@@ -24,51 +26,40 @@ function DocsPage() {
         </section>
 
         <section>
-          <h2 className="text-base font-semibold text-text">2. Get an API key</h2>
+          <h2 className="text-base font-semibold text-text">2. Connect to Claude Code</h2>
           <p className="mt-2">
-            Go to <strong className="text-text">Dashboard &rarr; Keys</strong> and
-            create a key. Copy it somewhere safe — you'll only see it once.
+            Create an API key from <strong className="text-text">Dashboard &rarr; Keys</strong>, then
+            run this command in your terminal:
+          </p>
+          <pre className="mt-3 rounded-lg bg-surface p-4 text-xs text-text font-mono overflow-x-auto whitespace-pre-wrap"><code>{`claude mcp add --transport http --header "Authorization: Bearer jrmy_your_key_here" jeremy ${apiUrl}/api/mcp`}</code></pre>
+          <p className="mt-3">
+            That's it — no packages to install, nothing runs locally. Jeremy's MCP server
+            runs entirely in the cloud.
+          </p>
+          <p className="mt-3">
+            See <Link to="/dashboard/settings" className="text-text underline hover:no-underline">Settings</Link> for
+            more details.
           </p>
         </section>
 
         <section>
-          <h2 className="text-base font-semibold text-text">3. Connect to Claude Code</h2>
-          <p className="mt-2">
-            Clone the repo and build the MCP server:
-          </p>
-          <pre className="mt-3 rounded-lg bg-surface p-4 text-xs text-text font-mono overflow-x-auto whitespace-pre-wrap"><code>{`git clone https://github.com/naieum/jeremy.git
-cd jeremy
-npm install
-npm run build --workspace=packages/mcp`}</code></pre>
-          <p className="mt-3">
-            Then register it with Claude Code (update the path to where you cloned the repo):
-          </p>
-          <pre className="mt-3 rounded-lg bg-surface p-4 text-xs text-text font-mono overflow-x-auto whitespace-pre-wrap"><code>{`claude mcp add --scope user jeremy -- \\
-  node ~/jeremy/packages/mcp/dist/index.js`}</code></pre>
-          <p className="mt-3">
-            Set your API key and URL as environment variables (add to your shell profile):
-          </p>
-          <pre className="mt-3 rounded-lg bg-surface p-4 text-xs text-text font-mono overflow-x-auto whitespace-pre-wrap"><code>{`export JEREMY_API_URL=https://jeremy.khuur.dev
-export JEREMY_API_KEY=jrmy_your_key_here`}</code></pre>
-          <p className="mt-3">
-            Replace <code className="rounded bg-surface px-1.5 py-0.5 text-xs text-text font-mono">jrmy_your_key_here</code> with the key you copied in step 2.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-base font-semibold text-text">4. Add a library</h2>
+          <h2 className="text-base font-semibold text-text">3. Add a library</h2>
           <p className="mt-2">
             In the dashboard, go to <strong className="text-text">Libraries &rarr; Add Library</strong>.
-            Enter a library name and a documentation URL, and jeremy will crawl and index it for you.
+            Enter a library name and a documentation URL, and Jeremy will crawl and index it for you.
+          </p>
+          <p className="mt-2">
+            You can also browse the <Link to="/catalog" className="text-text underline hover:no-underline">catalog</Link> —
+            we've already indexed {200}+ popular libraries so you can start searching immediately.
           </p>
         </section>
 
         <section>
-          <h2 className="text-base font-semibold text-text">5. Use it</h2>
+          <h2 className="text-base font-semibold text-text">4. Use it</h2>
           <p className="mt-2">
             That's it. Next time you're working in Claude Code, it will automatically
             search your indexed docs when it needs them. Try asking it about a library
-            you've added — jeremy handles the rest.
+            you've added — Jeremy handles the rest.
           </p>
         </section>
       </div>

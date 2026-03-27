@@ -1,17 +1,23 @@
 import tanstack from "@tanstack/react-start/server-entry";
-import { handleCronRefresh } from "./server/api/cron";
+import { handleCronRefresh, handleDiscoveryCron } from "./server/api/cron";
 
 export default {
   fetch: tanstack.fetch,
   async scheduled(
-    _event: ScheduledEvent,
+    event: ScheduledEvent,
     env: { CRON_SECRET: string },
     ctx: ExecutionContext
   ) {
-    const request = new Request("http://localhost/api/cron/refresh", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${env.CRON_SECRET}` },
-    });
-    ctx.waitUntil(handleCronRefresh(request));
+    const makeReq = (path: string) =>
+      new Request(`http://localhost${path}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${env.CRON_SECRET}` },
+      });
+
+    if (event.cron === "0 3 * * *") {
+      ctx.waitUntil(handleCronRefresh(makeReq("/api/cron/refresh")));
+    } else if (event.cron === "0 4 * * *") {
+      ctx.waitUntil(handleDiscoveryCron(makeReq("/api/cron/discovery")));
+    }
   },
 };

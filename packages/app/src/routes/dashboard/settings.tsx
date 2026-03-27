@@ -7,6 +7,88 @@ export const Route = createFileRoute("/dashboard/settings")({
   component: SettingsPage,
 });
 
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  function handleCopy() {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      className="absolute top-2 right-2 rounded px-2 py-1 text-xs text-muted hover:text-text hover:bg-hover transition-colors"
+    >
+      {copied ? "Copied!" : "Copy"}
+    </button>
+  );
+}
+
+function McpConfigSection() {
+  const apiUrl = typeof window !== "undefined" ? window.location.origin : "https://jeremy.khuur.dev";
+
+  const mcpCommand = `claude mcp add --transport http \\
+  --header "Authorization: Bearer jrmy_your_key_here" \\
+  jeremy ${apiUrl}/api/mcp`;
+
+  const jsonConfig = `{
+  "mcpServers": {
+    "jeremy": {
+      "type": "http",
+      "url": "${apiUrl}/api/mcp",
+      "headers": {
+        "Authorization": "Bearer jrmy_your_key_here"
+      }
+    }
+  }
+}`;
+
+  return (
+    <div className="rounded-lg border border-border bg-surface p-6">
+      <h2 className="text-base font-semibold text-text">Connect MCP server</h2>
+      <p className="mt-2 text-sm text-muted">
+        Connect Jeremy to Claude Code to search and manage your docs from the terminal.
+        Nothing to install — Jeremy's MCP server runs in the cloud.
+      </p>
+
+      <div className="mt-4 space-y-3">
+        <p className="text-sm text-muted">
+          Create an API key on the{" "}
+          <a href="/dashboard/keys" className="text-text underline hover:no-underline">Keys</a>{" "}
+          page, then run:
+        </p>
+        <div className="relative">
+          <pre className="rounded-lg bg-bg p-4 pr-16 text-xs text-text font-mono overflow-x-auto whitespace-pre-wrap">
+            {mcpCommand}
+          </pre>
+          <CopyButton text={mcpCommand} />
+        </div>
+        <p className="text-xs text-muted">
+          Replace <code className="rounded bg-hover px-1 py-0.5 text-text font-mono">jrmy_your_key_here</code> with
+          your actual API key.
+        </p>
+      </div>
+
+      <div className="mt-6 space-y-3">
+        <p className="text-sm font-medium text-text">Manual configuration</p>
+        <p className="text-sm text-muted">
+          Or add this directly to your Claude Code settings file:
+        </p>
+        <div className="relative">
+          <pre className="rounded-lg bg-bg p-4 pr-16 text-xs text-text font-mono overflow-x-auto whitespace-pre-wrap">
+            {jsonConfig}
+          </pre>
+          <CopyButton text={jsonConfig} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const themes: { value: Theme; label: string; description: string }[] = [
   { value: "blue", label: "Blue (Dark)", description: "Dark navy background, cream text" },
   { value: "blue-inverse", label: "Blue (Light)", description: "Cream background, navy text" },
@@ -90,24 +172,7 @@ function SettingsPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-border bg-surface p-6">
-          <h2 className="text-base font-semibold text-text">MCP configuration</h2>
-          <p className="mt-2 text-sm text-muted">
-            Register the jeremy MCP server with Claude Code:
-          </p>
-          <pre className="mt-3 rounded-lg bg-bg p-4 text-xs text-text font-mono overflow-x-auto whitespace-pre-wrap">{`claude mcp add --scope user jeremy -- \\
-  node ~/jeremy/packages/mcp/dist/index.js`}</pre>
-          <p className="mt-3 text-sm text-muted">
-            Then set your environment variables:
-          </p>
-          <pre className="mt-3 rounded-lg bg-bg p-4 text-xs text-text font-mono overflow-x-auto whitespace-pre-wrap">{`export JEREMY_API_URL=https://jeremy.khuur.dev
-export JEREMY_API_KEY=jrmy_your_key_here`}</pre>
-          <p className="mt-3 text-sm text-muted">
-            Replace <code className="rounded bg-hover px-1.5 py-0.5 text-xs text-text font-mono">jrmy_your_key_here</code> with
-            an API key from the <a href="/dashboard/keys" className="text-text underline hover:no-underline">Keys</a> page.
-            See the <a href="/docs" className="text-text underline hover:no-underline">docs</a> for full setup instructions.
-          </p>
-        </div>
+        <McpConfigSection />
       </div>
     </div>
   );

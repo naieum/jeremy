@@ -4,7 +4,7 @@ import { getRequestHeaders } from "@tanstack/react-start/server";
 import { env } from "cloudflare:workers";
 import { createAuth } from "~/server/auth";
 import { createDb, schema } from "~/server/db";
-import { count, eq, inArray } from "drizzle-orm";
+import { count, eq, sql } from "drizzle-orm";
 
 const getStats = createServerFn({ method: "GET" }).handler(async () => {
   const headers = getRequestHeaders();
@@ -20,17 +20,18 @@ const getStats = createServerFn({ method: "GET" }).handler(async () => {
 
   const [libCount] = await db.select({ count: count() }).from(schema.libraries).where(eq(schema.libraries.ownerId, userId));
 
-  const userLibIds = await db.select({ id: schema.libraries.id }).from(schema.libraries).where(eq(schema.libraries.ownerId, userId));
-  const libIds = userLibIds.map((l) => l.id);
-  const chunkTotal = libIds.length > 0
-    ? (await db.select({ count: count() }).from(schema.chunks).where(inArray(schema.chunks.libraryId, libIds)))[0].count
-    : 0;
+  const [chunkCount] = await db
+    .select({ count: count() })
+    .from(schema.chunks)
+    .where(
+      sql`${schema.chunks.libraryId} IN (SELECT id FROM libraries WHERE owner_id = ${userId})`
+    );
 
   const [keyCount] = await db.select({ count: count() }).from(schema.apiKeys).where(eq(schema.apiKeys.userId, userId));
 
   return {
     libraries: libCount.count,
-    chunks: chunkTotal,
+    chunks: chunkCount.count,
     apiKeys: keyCount.count,
   };
 });
@@ -58,16 +59,16 @@ function DashboardOverview() {
         <h2 className="text-base font-semibold text-text">Quick start</h2>
         <ol className="mt-4 list-inside list-decimal space-y-2 text-sm text-muted">
           <li>
-            <Link to="/dashboard/keys" className="text-text underline hover:no-underline">
-              Create an API key
+            <Link to="/dashboard/settings" className="text-text underline hover:no-underline">
+              Connect the MCP server
             </Link>{" "}
-            with admin permissions
+            to Claude Code
           </li>
           <li>
             <Link to="/dashboard/libraries/add" className="text-text underline hover:no-underline">
               Add a library
             </Link>{" "}
-            from an llms.txt URL or single page
+            from an llms.txt URL or docs page
           </li>
           <li>Query your docs via the MCP server or API</li>
           <li>

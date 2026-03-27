@@ -73,7 +73,7 @@ function KeysPage() {
     <div>
       <h1 className="text-2xl font-bold text-text">API keys</h1>
       <p className="mt-1 mb-6 text-sm text-muted">
-        Manage API keys for the MCP server and CLI.
+        Manage API keys for the MCP server and API.
       </p>
       <ApiKeyList keys={keys} onCreate={handleCreate} onDelete={handleDelete} />
     </div>

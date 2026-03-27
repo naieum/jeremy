@@ -20,8 +20,8 @@ test.describe("Admin panel", () => {
 
     await expect(page.locator("h1")).toHaveText("Admin", { timeout: 10000 });
 
-    // The table should have header columns
-    const table = page.locator("table");
+    // The users table should have header columns (use first() to avoid strict mode with Discovery table)
+    const table = page.locator("table").first();
     await expect(table).toBeVisible({ timeout: 10000 });
     await expect(table.getByText("Name")).toBeVisible();
     await expect(table.getByText("Email")).toBeVisible();
@@ -41,8 +41,8 @@ test.describe("Admin panel", () => {
 
     await expect(page.locator("h1")).toHaveText("Admin", { timeout: 10000 });
 
-    // The table should be visible with user rows
-    const table = page.locator("table");
+    // The users table should be visible (use first() to avoid strict mode with Discovery table)
+    const table = page.locator("table").first();
     await expect(table).toBeVisible({ timeout: 10000 });
 
     // User names are rendered as links to their detail pages

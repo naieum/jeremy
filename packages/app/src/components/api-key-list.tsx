@@ -132,7 +132,7 @@ export function ApiKeyList({ keys, onCreate, onDelete }: ApiKeyListProps) {
         ))}
         {keys.length === 0 && (
           <p className="px-4 py-8 text-center text-sm text-muted">
-            No API keys. Create one to use the MCP server or CLI.
+            No API keys. Create one to use the MCP server or API.
           </p>
         )}
       </div>

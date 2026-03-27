@@ -13,6 +13,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DocsRouteImport } from './routes/docs'
+import { Route as DeviceRouteImport } from './routes/device'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as IndexRouteImport } from './routes/index'
@@ -21,10 +22,12 @@ import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settin
 import { Route as DashboardKeysRouteImport } from './routes/dashboard/keys'
 import { Route as DashboardChatRouteImport } from './routes/dashboard/chat'
 import { Route as ApiSearchRouteImport } from './routes/api/search'
+import { Route as ApiMcpRouteImport } from './routes/api/mcp'
 import { Route as ApiKeysRouteImport } from './routes/api/keys'
 import { Route as ApiIngestUrlRouteImport } from './routes/api/ingest-url'
 import { Route as ApiIngestRouteImport } from './routes/api/ingest'
 import { Route as ApiEmbedRouteImport } from './routes/api/embed'
+import { Route as ApiDeviceTokenRouteImport } from './routes/api/device-token'
 import { Route as ApiCrawlRouteImport } from './routes/api/crawl'
 import { Route as ApiContextRouteImport } from './routes/api/context'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
@@ -36,6 +39,7 @@ import { Route as DashboardLibrariesIdRouteImport } from './routes/dashboard/lib
 import { Route as ApiWebhooksGithubRouteImport } from './routes/api/webhooks/github'
 import { Route as ApiLibrariesIdRouteImport } from './routes/api/libraries/$id'
 import { Route as ApiCronRefreshRouteImport } from './routes/api/cron/refresh'
+import { Route as ApiCronDiscoveryRouteImport } from './routes/api/cron/discovery'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiAdminUsersRouteImport } from './routes/api/admin/users'
 import { Route as ApiAdminLibrariesRouteImport } from './routes/api/admin/libraries'
@@ -44,12 +48,16 @@ import { Route as ApiLibrariesIdRepoRouteImport } from './routes/api/libraries/$
 import { Route as ApiLibrariesIdDocsRouteImport } from './routes/api/libraries/$id/docs'
 import { Route as ApiGithubVerifyCallbackRouteImport } from './routes/api/github/verify/callback'
 import { Route as ApiAdminUsersIdRouteImport } from './routes/api/admin/users/$id'
+import { Route as ApiAdminDiscoverySourcesRouteImport } from './routes/api/admin/discovery/sources'
+import { Route as ApiAdminDiscoveryRunRouteImport } from './routes/api/admin/discovery/run'
+import { Route as ApiAdminDiscoveryQueueRouteImport } from './routes/api/admin/discovery/queue'
 import { Route as ApiLibrariesIdRepoVerifyRouteImport } from './routes/api/libraries/$id/repo/verify'
 import { Route as ApiLibrariesIdRepoIngestRouteImport } from './routes/api/libraries/$id/repo/ingest'
 import { Route as ApiLibrariesIdDocsBuildRouteImport } from './routes/api/libraries/$id/docs/build'
 import { Route as ApiAdminUsersIdFlagsRouteImport } from './routes/api/admin/users/$id/flags'
 import { Route as ApiAdminLibrariesIdRebuildRouteImport } from './routes/api/admin/libraries/$id/rebuild'
 import { Route as ApiAdminLibrariesIdCategoryRouteImport } from './routes/api/admin/libraries/$id/category'
+import { Route as ApiAdminDiscoverySourcesIdRouteImport } from './routes/api/admin/discovery/sources/$id'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -69,6 +77,11 @@ const LoginRoute = LoginRouteImport.update({
 const DocsRoute = DocsRouteImport.update({
   id: '/docs',
   path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeviceRoute = DeviceRouteImport.update({
+  id: '/device',
+  path: '/device',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -111,6 +124,11 @@ const ApiSearchRoute = ApiSearchRouteImport.update({
   path: '/api/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMcpRoute = ApiMcpRouteImport.update({
+  id: '/api/mcp',
+  path: '/api/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiKeysRoute = ApiKeysRouteImport.update({
   id: '/api/keys',
   path: '/api/keys',
@@ -129,6 +147,11 @@ const ApiIngestRoute = ApiIngestRouteImport.update({
 const ApiEmbedRoute = ApiEmbedRouteImport.update({
   id: '/api/embed',
   path: '/api/embed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDeviceTokenRoute = ApiDeviceTokenRouteImport.update({
+  id: '/api/device-token',
+  path: '/api/device-token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiCrawlRoute = ApiCrawlRouteImport.update({
@@ -186,6 +209,11 @@ const ApiCronRefreshRoute = ApiCronRefreshRouteImport.update({
   path: '/api/cron/refresh',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronDiscoveryRoute = ApiCronDiscoveryRouteImport.update({
+  id: '/api/cron/discovery',
+  path: '/api/cron/discovery',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -226,6 +254,22 @@ const ApiAdminUsersIdRoute = ApiAdminUsersIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => ApiAdminUsersRoute,
 } as any)
+const ApiAdminDiscoverySourcesRoute =
+  ApiAdminDiscoverySourcesRouteImport.update({
+    id: '/api/admin/discovery/sources',
+    path: '/api/admin/discovery/sources',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAdminDiscoveryRunRoute = ApiAdminDiscoveryRunRouteImport.update({
+  id: '/api/admin/discovery/run',
+  path: '/api/admin/discovery/run',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminDiscoveryQueueRoute = ApiAdminDiscoveryQueueRouteImport.update({
+  id: '/api/admin/discovery/queue',
+  path: '/api/admin/discovery/queue',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiLibrariesIdRepoVerifyRoute =
   ApiLibrariesIdRepoVerifyRouteImport.update({
     id: '/verify',
@@ -260,11 +304,18 @@ const ApiAdminLibrariesIdCategoryRoute =
     path: '/$id/category',
     getParentRoute: () => ApiAdminLibrariesRoute,
   } as any)
+const ApiAdminDiscoverySourcesIdRoute =
+  ApiAdminDiscoverySourcesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => ApiAdminDiscoverySourcesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/device': typeof DeviceRoute
   '/docs': typeof DocsRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
@@ -272,10 +323,12 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/api/context': typeof ApiContextRoute
   '/api/crawl': typeof ApiCrawlRoute
+  '/api/device-token': typeof ApiDeviceTokenRoute
   '/api/embed': typeof ApiEmbedRoute
   '/api/ingest': typeof ApiIngestRoute
   '/api/ingest-url': typeof ApiIngestUrlRoute
   '/api/keys': typeof ApiKeysRoute
+  '/api/mcp': typeof ApiMcpRoute
   '/api/search': typeof ApiSearchRoute
   '/dashboard/chat': typeof DashboardChatRoute
   '/dashboard/keys': typeof DashboardKeysRoute
@@ -284,6 +337,7 @@ export interface FileRoutesByFullPath {
   '/api/admin/libraries': typeof ApiAdminLibrariesRouteWithChildren
   '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/discovery': typeof ApiCronDiscoveryRoute
   '/api/cron/refresh': typeof ApiCronRefreshRoute
   '/api/libraries/$id': typeof ApiLibrariesIdRouteWithChildren
   '/api/webhooks/github': typeof ApiWebhooksGithubRoute
@@ -292,11 +346,15 @@ export interface FileRoutesByFullPath {
   '/api/libraries/': typeof ApiLibrariesIndexRoute
   '/dashboard/admin/': typeof DashboardAdminIndexRoute
   '/dashboard/libraries/': typeof DashboardLibrariesIndexRoute
+  '/api/admin/discovery/queue': typeof ApiAdminDiscoveryQueueRoute
+  '/api/admin/discovery/run': typeof ApiAdminDiscoveryRunRoute
+  '/api/admin/discovery/sources': typeof ApiAdminDiscoverySourcesRouteWithChildren
   '/api/admin/users/$id': typeof ApiAdminUsersIdRouteWithChildren
   '/api/github/verify/callback': typeof ApiGithubVerifyCallbackRoute
   '/api/libraries/$id/docs': typeof ApiLibrariesIdDocsRouteWithChildren
   '/api/libraries/$id/repo': typeof ApiLibrariesIdRepoRouteWithChildren
   '/dashboard/admin/users/$id': typeof DashboardAdminUsersIdRoute
+  '/api/admin/discovery/sources/$id': typeof ApiAdminDiscoverySourcesIdRoute
   '/api/admin/libraries/$id/category': typeof ApiAdminLibrariesIdCategoryRoute
   '/api/admin/libraries/$id/rebuild': typeof ApiAdminLibrariesIdRebuildRoute
   '/api/admin/users/$id/flags': typeof ApiAdminUsersIdFlagsRoute
@@ -307,6 +365,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
+  '/device': typeof DeviceRoute
   '/docs': typeof DocsRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
@@ -314,10 +373,12 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/api/context': typeof ApiContextRoute
   '/api/crawl': typeof ApiCrawlRoute
+  '/api/device-token': typeof ApiDeviceTokenRoute
   '/api/embed': typeof ApiEmbedRoute
   '/api/ingest': typeof ApiIngestRoute
   '/api/ingest-url': typeof ApiIngestUrlRoute
   '/api/keys': typeof ApiKeysRoute
+  '/api/mcp': typeof ApiMcpRoute
   '/api/search': typeof ApiSearchRoute
   '/dashboard/chat': typeof DashboardChatRoute
   '/dashboard/keys': typeof DashboardKeysRoute
@@ -326,6 +387,7 @@ export interface FileRoutesByTo {
   '/api/admin/libraries': typeof ApiAdminLibrariesRouteWithChildren
   '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/discovery': typeof ApiCronDiscoveryRoute
   '/api/cron/refresh': typeof ApiCronRefreshRoute
   '/api/libraries/$id': typeof ApiLibrariesIdRouteWithChildren
   '/api/webhooks/github': typeof ApiWebhooksGithubRoute
@@ -334,11 +396,15 @@ export interface FileRoutesByTo {
   '/api/libraries': typeof ApiLibrariesIndexRoute
   '/dashboard/admin': typeof DashboardAdminIndexRoute
   '/dashboard/libraries': typeof DashboardLibrariesIndexRoute
+  '/api/admin/discovery/queue': typeof ApiAdminDiscoveryQueueRoute
+  '/api/admin/discovery/run': typeof ApiAdminDiscoveryRunRoute
+  '/api/admin/discovery/sources': typeof ApiAdminDiscoverySourcesRouteWithChildren
   '/api/admin/users/$id': typeof ApiAdminUsersIdRouteWithChildren
   '/api/github/verify/callback': typeof ApiGithubVerifyCallbackRoute
   '/api/libraries/$id/docs': typeof ApiLibrariesIdDocsRouteWithChildren
   '/api/libraries/$id/repo': typeof ApiLibrariesIdRepoRouteWithChildren
   '/dashboard/admin/users/$id': typeof DashboardAdminUsersIdRoute
+  '/api/admin/discovery/sources/$id': typeof ApiAdminDiscoverySourcesIdRoute
   '/api/admin/libraries/$id/category': typeof ApiAdminLibrariesIdCategoryRoute
   '/api/admin/libraries/$id/rebuild': typeof ApiAdminLibrariesIdRebuildRoute
   '/api/admin/users/$id/flags': typeof ApiAdminUsersIdFlagsRoute
@@ -351,6 +417,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/catalog': typeof CatalogRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/device': typeof DeviceRoute
   '/docs': typeof DocsRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
@@ -358,10 +425,12 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/api/context': typeof ApiContextRoute
   '/api/crawl': typeof ApiCrawlRoute
+  '/api/device-token': typeof ApiDeviceTokenRoute
   '/api/embed': typeof ApiEmbedRoute
   '/api/ingest': typeof ApiIngestRoute
   '/api/ingest-url': typeof ApiIngestUrlRoute
   '/api/keys': typeof ApiKeysRoute
+  '/api/mcp': typeof ApiMcpRoute
   '/api/search': typeof ApiSearchRoute
   '/dashboard/chat': typeof DashboardChatRoute
   '/dashboard/keys': typeof DashboardKeysRoute
@@ -370,6 +439,7 @@ export interface FileRoutesById {
   '/api/admin/libraries': typeof ApiAdminLibrariesRouteWithChildren
   '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/discovery': typeof ApiCronDiscoveryRoute
   '/api/cron/refresh': typeof ApiCronRefreshRoute
   '/api/libraries/$id': typeof ApiLibrariesIdRouteWithChildren
   '/api/webhooks/github': typeof ApiWebhooksGithubRoute
@@ -378,11 +448,15 @@ export interface FileRoutesById {
   '/api/libraries/': typeof ApiLibrariesIndexRoute
   '/dashboard/admin/': typeof DashboardAdminIndexRoute
   '/dashboard/libraries/': typeof DashboardLibrariesIndexRoute
+  '/api/admin/discovery/queue': typeof ApiAdminDiscoveryQueueRoute
+  '/api/admin/discovery/run': typeof ApiAdminDiscoveryRunRoute
+  '/api/admin/discovery/sources': typeof ApiAdminDiscoverySourcesRouteWithChildren
   '/api/admin/users/$id': typeof ApiAdminUsersIdRouteWithChildren
   '/api/github/verify/callback': typeof ApiGithubVerifyCallbackRoute
   '/api/libraries/$id/docs': typeof ApiLibrariesIdDocsRouteWithChildren
   '/api/libraries/$id/repo': typeof ApiLibrariesIdRepoRouteWithChildren
   '/dashboard/admin/users/$id': typeof DashboardAdminUsersIdRoute
+  '/api/admin/discovery/sources/$id': typeof ApiAdminDiscoverySourcesIdRoute
   '/api/admin/libraries/$id/category': typeof ApiAdminLibrariesIdCategoryRoute
   '/api/admin/libraries/$id/rebuild': typeof ApiAdminLibrariesIdRebuildRoute
   '/api/admin/users/$id/flags': typeof ApiAdminUsersIdFlagsRoute
@@ -396,6 +470,7 @@ export interface FileRouteTypes {
     | '/'
     | '/catalog'
     | '/dashboard'
+    | '/device'
     | '/docs'
     | '/login'
     | '/privacy'
@@ -403,10 +478,12 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/context'
     | '/api/crawl'
+    | '/api/device-token'
     | '/api/embed'
     | '/api/ingest'
     | '/api/ingest-url'
     | '/api/keys'
+    | '/api/mcp'
     | '/api/search'
     | '/dashboard/chat'
     | '/dashboard/keys'
@@ -415,6 +492,7 @@ export interface FileRouteTypes {
     | '/api/admin/libraries'
     | '/api/admin/users'
     | '/api/auth/$'
+    | '/api/cron/discovery'
     | '/api/cron/refresh'
     | '/api/libraries/$id'
     | '/api/webhooks/github'
@@ -423,11 +501,15 @@ export interface FileRouteTypes {
     | '/api/libraries/'
     | '/dashboard/admin/'
     | '/dashboard/libraries/'
+    | '/api/admin/discovery/queue'
+    | '/api/admin/discovery/run'
+    | '/api/admin/discovery/sources'
     | '/api/admin/users/$id'
     | '/api/github/verify/callback'
     | '/api/libraries/$id/docs'
     | '/api/libraries/$id/repo'
     | '/dashboard/admin/users/$id'
+    | '/api/admin/discovery/sources/$id'
     | '/api/admin/libraries/$id/category'
     | '/api/admin/libraries/$id/rebuild'
     | '/api/admin/users/$id/flags'
@@ -438,6 +520,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/catalog'
+    | '/device'
     | '/docs'
     | '/login'
     | '/privacy'
@@ -445,10 +528,12 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/context'
     | '/api/crawl'
+    | '/api/device-token'
     | '/api/embed'
     | '/api/ingest'
     | '/api/ingest-url'
     | '/api/keys'
+    | '/api/mcp'
     | '/api/search'
     | '/dashboard/chat'
     | '/dashboard/keys'
@@ -457,6 +542,7 @@ export interface FileRouteTypes {
     | '/api/admin/libraries'
     | '/api/admin/users'
     | '/api/auth/$'
+    | '/api/cron/discovery'
     | '/api/cron/refresh'
     | '/api/libraries/$id'
     | '/api/webhooks/github'
@@ -465,11 +551,15 @@ export interface FileRouteTypes {
     | '/api/libraries'
     | '/dashboard/admin'
     | '/dashboard/libraries'
+    | '/api/admin/discovery/queue'
+    | '/api/admin/discovery/run'
+    | '/api/admin/discovery/sources'
     | '/api/admin/users/$id'
     | '/api/github/verify/callback'
     | '/api/libraries/$id/docs'
     | '/api/libraries/$id/repo'
     | '/dashboard/admin/users/$id'
+    | '/api/admin/discovery/sources/$id'
     | '/api/admin/libraries/$id/category'
     | '/api/admin/libraries/$id/rebuild'
     | '/api/admin/users/$id/flags'
@@ -481,6 +571,7 @@ export interface FileRouteTypes {
     | '/'
     | '/catalog'
     | '/dashboard'
+    | '/device'
     | '/docs'
     | '/login'
     | '/privacy'
@@ -488,10 +579,12 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/context'
     | '/api/crawl'
+    | '/api/device-token'
     | '/api/embed'
     | '/api/ingest'
     | '/api/ingest-url'
     | '/api/keys'
+    | '/api/mcp'
     | '/api/search'
     | '/dashboard/chat'
     | '/dashboard/keys'
@@ -500,6 +593,7 @@ export interface FileRouteTypes {
     | '/api/admin/libraries'
     | '/api/admin/users'
     | '/api/auth/$'
+    | '/api/cron/discovery'
     | '/api/cron/refresh'
     | '/api/libraries/$id'
     | '/api/webhooks/github'
@@ -508,11 +602,15 @@ export interface FileRouteTypes {
     | '/api/libraries/'
     | '/dashboard/admin/'
     | '/dashboard/libraries/'
+    | '/api/admin/discovery/queue'
+    | '/api/admin/discovery/run'
+    | '/api/admin/discovery/sources'
     | '/api/admin/users/$id'
     | '/api/github/verify/callback'
     | '/api/libraries/$id/docs'
     | '/api/libraries/$id/repo'
     | '/dashboard/admin/users/$id'
+    | '/api/admin/discovery/sources/$id'
     | '/api/admin/libraries/$id/category'
     | '/api/admin/libraries/$id/rebuild'
     | '/api/admin/users/$id/flags'
@@ -525,6 +623,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CatalogRoute: typeof CatalogRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  DeviceRoute: typeof DeviceRoute
   DocsRoute: typeof DocsRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -532,18 +631,24 @@ export interface RootRouteChildren {
   ApiChatRoute: typeof ApiChatRoute
   ApiContextRoute: typeof ApiContextRoute
   ApiCrawlRoute: typeof ApiCrawlRoute
+  ApiDeviceTokenRoute: typeof ApiDeviceTokenRoute
   ApiEmbedRoute: typeof ApiEmbedRoute
   ApiIngestRoute: typeof ApiIngestRoute
   ApiIngestUrlRoute: typeof ApiIngestUrlRoute
   ApiKeysRoute: typeof ApiKeysRoute
+  ApiMcpRoute: typeof ApiMcpRoute
   ApiSearchRoute: typeof ApiSearchRoute
   ApiAdminLibrariesRoute: typeof ApiAdminLibrariesRouteWithChildren
   ApiAdminUsersRoute: typeof ApiAdminUsersRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiCronDiscoveryRoute: typeof ApiCronDiscoveryRoute
   ApiCronRefreshRoute: typeof ApiCronRefreshRoute
   ApiLibrariesIdRoute: typeof ApiLibrariesIdRouteWithChildren
   ApiWebhooksGithubRoute: typeof ApiWebhooksGithubRoute
   ApiLibrariesIndexRoute: typeof ApiLibrariesIndexRoute
+  ApiAdminDiscoveryQueueRoute: typeof ApiAdminDiscoveryQueueRoute
+  ApiAdminDiscoveryRunRoute: typeof ApiAdminDiscoveryRunRoute
+  ApiAdminDiscoverySourcesRoute: typeof ApiAdminDiscoverySourcesRouteWithChildren
   ApiGithubVerifyCallbackRoute: typeof ApiGithubVerifyCallbackRoute
 }
 
@@ -575,6 +680,13 @@ declare module '@tanstack/react-router' {
       path: '/docs'
       fullPath: '/docs'
       preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/device': {
+      id: '/device'
+      path: '/device'
+      fullPath: '/device'
+      preLoaderRoute: typeof DeviceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -633,6 +745,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/mcp': {
+      id: '/api/mcp'
+      path: '/api/mcp'
+      fullPath: '/api/mcp'
+      preLoaderRoute: typeof ApiMcpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/keys': {
       id: '/api/keys'
       path: '/api/keys'
@@ -659,6 +778,13 @@ declare module '@tanstack/react-router' {
       path: '/api/embed'
       fullPath: '/api/embed'
       preLoaderRoute: typeof ApiEmbedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/device-token': {
+      id: '/api/device-token'
+      path: '/api/device-token'
+      fullPath: '/api/device-token'
+      preLoaderRoute: typeof ApiDeviceTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/crawl': {
@@ -738,6 +864,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronRefreshRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/discovery': {
+      id: '/api/cron/discovery'
+      path: '/api/cron/discovery'
+      fullPath: '/api/cron/discovery'
+      preLoaderRoute: typeof ApiCronDiscoveryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -794,6 +927,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAdminUsersIdRouteImport
       parentRoute: typeof ApiAdminUsersRoute
     }
+    '/api/admin/discovery/sources': {
+      id: '/api/admin/discovery/sources'
+      path: '/api/admin/discovery/sources'
+      fullPath: '/api/admin/discovery/sources'
+      preLoaderRoute: typeof ApiAdminDiscoverySourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/discovery/run': {
+      id: '/api/admin/discovery/run'
+      path: '/api/admin/discovery/run'
+      fullPath: '/api/admin/discovery/run'
+      preLoaderRoute: typeof ApiAdminDiscoveryRunRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/discovery/queue': {
+      id: '/api/admin/discovery/queue'
+      path: '/api/admin/discovery/queue'
+      fullPath: '/api/admin/discovery/queue'
+      preLoaderRoute: typeof ApiAdminDiscoveryQueueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/libraries/$id/repo/verify': {
       id: '/api/libraries/$id/repo/verify'
       path: '/verify'
@@ -835,6 +989,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/admin/libraries/$id/category'
       preLoaderRoute: typeof ApiAdminLibrariesIdCategoryRouteImport
       parentRoute: typeof ApiAdminLibrariesRoute
+    }
+    '/api/admin/discovery/sources/$id': {
+      id: '/api/admin/discovery/sources/$id'
+      path: '/$id'
+      fullPath: '/api/admin/discovery/sources/$id'
+      preLoaderRoute: typeof ApiAdminDiscoverySourcesIdRouteImport
+      parentRoute: typeof ApiAdminDiscoverySourcesRoute
     }
   }
 }
@@ -942,10 +1103,25 @@ const ApiLibrariesIdRouteWithChildren = ApiLibrariesIdRoute._addFileChildren(
   ApiLibrariesIdRouteChildren,
 )
 
+interface ApiAdminDiscoverySourcesRouteChildren {
+  ApiAdminDiscoverySourcesIdRoute: typeof ApiAdminDiscoverySourcesIdRoute
+}
+
+const ApiAdminDiscoverySourcesRouteChildren: ApiAdminDiscoverySourcesRouteChildren =
+  {
+    ApiAdminDiscoverySourcesIdRoute: ApiAdminDiscoverySourcesIdRoute,
+  }
+
+const ApiAdminDiscoverySourcesRouteWithChildren =
+  ApiAdminDiscoverySourcesRoute._addFileChildren(
+    ApiAdminDiscoverySourcesRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CatalogRoute: CatalogRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  DeviceRoute: DeviceRoute,
   DocsRoute: DocsRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
@@ -953,18 +1129,24 @@ const rootRouteChildren: RootRouteChildren = {
   ApiChatRoute: ApiChatRoute,
   ApiContextRoute: ApiContextRoute,
   ApiCrawlRoute: ApiCrawlRoute,
+  ApiDeviceTokenRoute: ApiDeviceTokenRoute,
   ApiEmbedRoute: ApiEmbedRoute,
   ApiIngestRoute: ApiIngestRoute,
   ApiIngestUrlRoute: ApiIngestUrlRoute,
   ApiKeysRoute: ApiKeysRoute,
+  ApiMcpRoute: ApiMcpRoute,
   ApiSearchRoute: ApiSearchRoute,
   ApiAdminLibrariesRoute: ApiAdminLibrariesRouteWithChildren,
   ApiAdminUsersRoute: ApiAdminUsersRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiCronDiscoveryRoute: ApiCronDiscoveryRoute,
   ApiCronRefreshRoute: ApiCronRefreshRoute,
   ApiLibrariesIdRoute: ApiLibrariesIdRouteWithChildren,
   ApiWebhooksGithubRoute: ApiWebhooksGithubRoute,
   ApiLibrariesIndexRoute: ApiLibrariesIndexRoute,
+  ApiAdminDiscoveryQueueRoute: ApiAdminDiscoveryQueueRoute,
+  ApiAdminDiscoveryRunRoute: ApiAdminDiscoveryRunRoute,
+  ApiAdminDiscoverySourcesRoute: ApiAdminDiscoverySourcesRouteWithChildren,
   ApiGithubVerifyCallbackRoute: ApiGithubVerifyCallbackRoute,
 }
 export const routeTree = rootRouteImport

@@ -14,7 +14,7 @@ export async function validateApiKey(
   const keyHash = await hashKey(key);
 
   // Check KV cache first
-  const cacheKey = `auth:${keyHash.slice(0, 16)}`;
+  const cacheKey = `auth:${keyHash.slice(0, 32)}`;
   const cached = await getCached<{ userId: string; keyId: string; permissions: string }>(cacheKey);
   if (cached) {
     if (requiredPermission === "admin" && cached.permissions !== "admin") return null;

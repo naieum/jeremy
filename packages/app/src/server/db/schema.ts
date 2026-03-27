@@ -6,6 +6,37 @@ import {
   uniqueIndex,
 } from "drizzle-orm/sqlite-core";
 
+// ─── Discovery tables ───
+
+export const discoverySources = sqliteTable("discovery_sources", {
+  id: text("id").primaryKey(),
+  type: text("type").notNull(),
+  name: text("name").notNull(),
+  config: text("config").notNull().default("{}"),
+  enabled: integer("enabled").notNull().default(1),
+  schedule: text("schedule").notNull().default("weekly"),
+  lastRunAt: text("last_run_at"),
+  lastRunResult: text("last_run_result"),
+  createdAt: text("created_at").default("(datetime('now'))"),
+});
+
+export const discoveryQueue = sqliteTable("discovery_queue", {
+  id: text("id").primaryKey(),
+  sourceId: text("source_id").notNull(),
+  identifier: text("identifier").notNull(),
+  name: text("name").notNull(),
+  websiteUrl: text("website_url"),
+  docsUrl: text("docs_url"),
+  strategy: text("strategy"),
+  libraryId: text("library_id"),
+  status: text("status").notNull().default("pending"),
+  skipReason: text("skip_reason"),
+  errorMsg: text("error_msg"),
+  metadata: text("metadata").default("{}"),
+  discoveredAt: text("discovered_at").default("(datetime('now'))"),
+  processedAt: text("processed_at"),
+});
+
 // ─── Better Auth tables ───
 
 export const user = sqliteTable("user", {
@@ -64,6 +95,23 @@ export const verification = sqliteTable("verification", {
   updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
 });
 
+// ─── Device Authorization ───
+
+export const deviceCode = sqliteTable("deviceCode", {
+  id: text("id").primaryKey(),
+  deviceCode: text("deviceCode").notNull(),
+  userCode: text("userCode").notNull(),
+  userId: text("userId"),
+  clientId: text("clientId"),
+  scope: text("scope"),
+  status: text("status").notNull().default("pending"),
+  expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
+  lastPolledAt: integer("lastPolledAt", { mode: "timestamp" }),
+  pollingInterval: integer("pollingInterval"),
+  createdAt: integer("createdAt", { mode: "timestamp" }),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }),
+});
+
 // ─── Application tables ───
 
 export const libraries = sqliteTable(
@@ -77,9 +125,10 @@ export const libraries = sqliteTable(
     version: text("version"),
     chunkCount: integer("chunk_count").default(0),
     ownerId: text("owner_id").notNull(),
-    isPublic: integer("is_public").default(1),
+    isPublic: integer("is_public").default(0),
     createdAt: text("created_at").default("(datetime('now'))"),
     category: text("category").default("other"),
+    contentHash: text("content_hash"),
     updatedAt: text("updated_at").default("(datetime('now'))"),
   },
   (table) => [

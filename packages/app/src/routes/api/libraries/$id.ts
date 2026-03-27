@@ -19,7 +19,9 @@ export const Route = createFileRoute("/api/libraries/$id")({
   server: {
     handlers: {
       GET: async ({ request, params }) => {
-        const userId = await getSessionUserId(request);
+        const apiAuth = await validateApiKey(request);
+        const sessionUserId = apiAuth ? null : await getSessionUserId(request);
+        const userId = apiAuth?.userId ?? sessionUserId;
         if (!userId) {
           return Response.json({ error: "Unauthorized" }, { status: 401 });
         }

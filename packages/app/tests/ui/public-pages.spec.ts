@@ -34,7 +34,7 @@ test.describe("Public pages", () => {
     await expect(page.locator("h1")).toHaveText("Terms of Service", { timeout: 10000 });
     // Section headings on the terms page
     await expect(page.getByText("1. Acceptance")).toBeVisible();
-    await expect(page.getByText("2. Self-Hosting")).toBeVisible();
+    await expect(page.getByText("2. The service")).toBeVisible();
   });
 
   test("Login page shows sign-in form", async ({ page }) => {

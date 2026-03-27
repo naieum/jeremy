@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: '%s | Jeremy',
     default: 'Jeremy Documentation',
   },
-  description: 'Documentation for Jeremy — a self-hosted documentation RAG system',
+  description: 'Documentation for Jeremy — documentation context for AI coding tools',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

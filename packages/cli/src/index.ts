@@ -82,7 +82,7 @@ const program = new Command();
 
 program
   .name("jeremy")
-  .description("CLI for the Jeremy self-hosted documentation RAG system")
+  .description("CLI for the Jeremy documentation RAG service")
   .version("1.0.0");
 
 // ---------------------------------------------------------------------------

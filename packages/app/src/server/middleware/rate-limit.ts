@@ -24,9 +24,10 @@ export async function checkRateLimit(
 
     await env.CACHE.put(key, String(count + 1), { expirationTtl: 120 });
     return { allowed: true, remaining: limit - count - 1 };
-  } catch {
-    // If KV fails, allow the request (fail open)
-    return { allowed: true, remaining: limit };
+  } catch (e) {
+    // If KV fails, deny the request (fail closed) to prevent abuse during outages
+    console.warn("Rate limit KV failed, denying request:", e);
+    return { allowed: false, remaining: 0, retryAfter: 10 };
   }
 }
 

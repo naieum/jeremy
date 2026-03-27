@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { deviceAuthorization } from "better-auth/plugins/device-authorization";
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "./db/schema";
 
@@ -20,7 +21,7 @@ export function createAuth(env: AuthEnv, requestOrigin?: string) {
   return betterAuth({
     baseURL,
     secret: env.BETTER_AUTH_SECRET,
-    database: drizzleAdapter(db, { provider: "sqlite" }),
+    database: drizzleAdapter(db, { provider: "sqlite", transaction: false }),
     emailAndPassword: { enabled: true },
     trustedOrigins: [baseURL, env.BASE_URL],
     socialProviders: {
@@ -33,6 +34,13 @@ export function createAuth(env: AuthEnv, requestOrigin?: string) {
         clientSecret: env.GOOGLE_CLIENT_SECRET,
       },
     },
+    plugins: [
+      deviceAuthorization({
+        verificationUri: "/device",
+        expiresIn: "15m",
+        userCodeLength: 8,
+      }),
+    ],
   });
 }
 

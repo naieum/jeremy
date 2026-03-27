@@ -180,4 +180,52 @@ export class ApiClient {
       headers: { Authorization: `Bearer ${cronSecret}` },
     });
   }
+
+  async cronDiscovery(cronSecret: string) {
+    return this.request.post("/api/cron/discovery", {
+      headers: { Authorization: `Bearer ${cronSecret}` },
+    });
+  }
+
+  // --- Discovery (admin session auth) ---
+
+  async discoveryListSources() {
+    return this.request.get("/api/admin/discovery/sources");
+  }
+
+  async discoveryAddSource(body: {
+    type: string;
+    name: string;
+    config: string;
+    schedule?: string;
+  }) {
+    return this.request.post("/api/admin/discovery/sources", { data: body });
+  }
+
+  async discoveryUpdateSource(
+    id: string,
+    body: { enabled?: number; config?: string; schedule?: string; name?: string }
+  ) {
+    return this.request.patch(`/api/admin/discovery/sources/${id}`, {
+      data: body,
+    });
+  }
+
+  async discoveryDeleteSource(id: string) {
+    return this.request.delete(`/api/admin/discovery/sources/${id}`);
+  }
+
+  async discoveryRun() {
+    return this.request.post("/api/admin/discovery/run");
+  }
+
+  async discoveryListQueue(params?: { status?: string; limit?: number }) {
+    const qs = new URLSearchParams();
+    if (params?.status) qs.set("status", params.status);
+    if (params?.limit) qs.set("limit", String(params.limit));
+    const query = qs.toString();
+    return this.request.get(
+      `/api/admin/discovery/queue${query ? "?" + query : ""}`
+    );
+  }
 }

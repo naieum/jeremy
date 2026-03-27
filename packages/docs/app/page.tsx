@@ -5,7 +5,7 @@ export default function HomePage() {
     <main className="flex min-h-screen flex-col items-center justify-center p-8">
       <h1 className="mb-4 text-4xl font-bold">Jeremy</h1>
       <p className="mb-8 text-lg text-fd-muted-foreground">
-        Self-hosted documentation RAG for AI assistants
+        Documentation context for AI coding tools
       </p>
       <Link
         href="/docs"

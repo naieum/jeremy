@@ -89,14 +89,14 @@ export async function ingestFromUrl(params: IngestParams): Promise<IngestResult>
     url: c.url,
     tokenCount: c.tokenCount,
   }));
-  for (let i = 0; i < chunkValues.length; i += 500) {
-    await db.insert(schema.chunks).values(chunkValues.slice(i, i + 500));
+  for (let i = 0; i < chunkValues.length; i += 10) {
+    await db.insert(schema.chunks).values(chunkValues.slice(i, i + 10));
   }
 
   // Generate embeddings and upsert vectors
   let vectorized = false;
   try {
-    const texts = chunks.map(c => `${c.title}: ${c.content}`);
+    const texts = chunks.map(c => `${c.title}: ${c.content}`.slice(0, 2000));
     const embeddings = await generateEmbeddings(texts);
     const vectors = chunks.map((c, i) => ({
       id: c.id,

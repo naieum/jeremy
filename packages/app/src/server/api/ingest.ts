@@ -62,6 +62,17 @@ export async function handleIngest(request: Request): Promise<Response> {
       return Response.json({ error: "libraryId, name, and chunks are required" }, { status: 400 });
     }
 
+    if (chunks.length > 500) {
+      return Response.json({ error: "Maximum 500 chunks per request" }, { status: 400 });
+    }
+
+    const MAX_CONTENT_SIZE = 10000;
+    for (const chunk of chunks) {
+      if (chunk.content && chunk.content.length > MAX_CONTENT_SIZE) {
+        chunk.content = chunk.content.slice(0, MAX_CONTENT_SIZE);
+      }
+    }
+
     const db = createDb(env.DB);
 
     // Check if library exists
@@ -80,11 +91,16 @@ export async function handleIngest(request: Request): Promise<Response> {
       try { await deleteVectorsByLibrary(libraryId); } catch (e) { console.warn("Vectorize delete failed:", e); }
     }
 
+    // Only admin catalog libraries are public; user libraries are private
+    const adminUserId = (env as any).ADMIN_USER_ID;
+    const isPublic = !libraryId.startsWith("project:") && userId === adminUserId ? 1 : 0;
+
     // Upsert library
     if (existing) {
       await db.update(schema.libraries).set({
         name, description, sourceUrl, sourceType, version,
         chunkCount: chunks.length,
+        isPublic,
         updatedAt: new Date().toISOString(),
       }).where(eq(schema.libraries.id, libraryId));
     } else {
@@ -92,6 +108,7 @@ export async function handleIngest(request: Request): Promise<Response> {
         id: libraryId, name, description, sourceUrl,
         sourceType: sourceType ?? "llms_txt",
         version, chunkCount: chunks.length, ownerId: userId,
+        isPublic,
       });
     }
 
@@ -151,6 +168,6 @@ export async function handleIngest(request: Request): Promise<Response> {
     });
   } catch (e: any) {
     console.error("Ingest error:", e?.message, e?.stack);
-    return Response.json({ error: `Ingest failed: ${e?.message}` }, { status: 500 });
+    return Response.json({ error: "Ingest failed" }, { status: 500 });
   }
 }

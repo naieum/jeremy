@@ -15,7 +15,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Jeremy - Self-Hosted Documentation RAG" },
+      { title: "Jeremy - Documentation RAG for AI Coding Tools" },
     ],
     links: [
       { rel: "icon", href: "/favicon.ico" },

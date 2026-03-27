@@ -1,55 +1,42 @@
 ---
 title: Setup
-description: Install and configure the Jeremy MCP server for use with AI assistants.
+description: Connect the Jeremy MCP server to Claude Code.
 ---
 
-## Install
+## Quick Setup
 
-Install the MCP server globally:
+Create an API key from **Dashboard &rarr; Keys**, then run this command:
 
 ```bash
-npm install -g @jeremy/mcp
+claude mcp add --transport http \
+  --header "Authorization: Bearer jrmy_your_key_here" \
+  jeremy https://jeremy.khuur.dev/api/mcp
 ```
 
-This provides the `jeremy-mcp` command.
+Nothing to install — Jeremy's MCP server runs entirely in the cloud.
 
-## Configure in Claude Code
+## Manual Configuration
 
-Add the Jeremy MCP server to your Claude Code configuration. You can add it to either:
-
-- **Project settings** -- `.claude/settings.json` in your project root
-- **Global settings** -- `~/.claude/settings.json`
-- **Claude Desktop** -- `claude_desktop_config.json`
+You can also add Jeremy directly to your Claude Code settings file (`.claude/settings.json` or `~/.claude/settings.json`):
 
 ```json
 {
   "mcpServers": {
     "jeremy": {
-      "command": "jeremy-mcp",
-      "env": {
-        "JEREMY_API_URL": "https://jeremy-app.ian-muench.workers.dev",
-        "JEREMY_API_KEY": "jrmy_your-api-key"
+      "type": "http",
+      "url": "https://jeremy.khuur.dev/api/mcp",
+      "headers": {
+        "Authorization": "Bearer jrmy_your-api-key"
       }
     }
   }
 }
 ```
 
-Replace `jrmy_your-api-key` with an API key generated from the [Jeremy Dashboard](https://jeremy-app.ian-muench.workers.dev).
-
-## Environment Variables
-
-| Variable | Description | Required |
-|---|---|---|
-| `JEREMY_API_URL` | Base URL of your Jeremy instance | Yes |
-| `JEREMY_API_KEY` | Your API key for authentication | Yes |
-
-If you are self-hosting Jeremy, set `JEREMY_API_URL` to your own instance URL.
-
 ## Verify
 
-Once configured, restart Claude Code. The assistant should now have access to the `resolve-library-id` and `query-docs` tools. You can verify by asking Claude to look up documentation for a library you have already ingested.
+Once configured, restart Claude Code. The assistant should now have access to the `resolve-library-id` and `query-docs` tools. You can verify by asking Claude to look up documentation for a library you've added.
 
 ## Other MCP Clients
 
-The Jeremy MCP server works with any MCP-compatible client, not just Claude Code. The server communicates over stdio using the standard MCP protocol. Point your client at the `jeremy-mcp` command and provide the required environment variables.
+Jeremy's MCP endpoint uses the Streamable HTTP transport at `https://jeremy.khuur.dev/api/mcp`. Any MCP-compatible client that supports HTTP transport can connect by sending JSON-RPC 2.0 requests with an `Authorization: Bearer jrmy_...` header.

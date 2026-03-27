@@ -59,7 +59,7 @@ function LandingPage() {
             <div>
               <span className="text-text/80 font-medium">Any docs source</span>
               <br />
-              URLs, llms.txt, or manual upload
+              URLs, llms.txt, or web crawl
             </div>
             <div>
               <span className="text-text/80 font-medium">Semantic search</span>
@@ -69,7 +69,7 @@ function LandingPage() {
             <div>
               <span className="text-text/80 font-medium">Team ready</span>
               <br />
-              Share via API keys, no infra to manage
+              Share context via API keys
             </div>
           </div>
         </div>

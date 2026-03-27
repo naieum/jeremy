@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { createDb, schema } from "../db";
-import { eq, and, count } from "drizzle-orm";
+import { eq, and, or, count } from "drizzle-orm";
 import { deleteVectorsByLibrary } from "../lib/vectorize";
 
 export async function handleListLibraries(userId: string): Promise<Response> {
@@ -17,7 +17,10 @@ export async function handleGetLibrary(id: string, userId: string, limit = 100, 
   const [library] = await db
     .select()
     .from(schema.libraries)
-    .where(and(eq(schema.libraries.id, id), eq(schema.libraries.ownerId, userId)))
+    .where(and(
+      eq(schema.libraries.id, id),
+      or(eq(schema.libraries.ownerId, userId), eq(schema.libraries.isPublic, 1))
+    ))
     .limit(1);
 
   if (!library) {

@@ -62,10 +62,20 @@ test.describe("Libraries - list, get, delete", () => {
     expect(body2.hasMore).toBe(false);
   });
 
-  test("GET /api/libraries/$id 404 for other user's library", async ({
+  test("GET /api/libraries/$id returns other user's public library", async ({
     userClient,
   }) => {
     const res = await userClient.getLibrary("public-lib-1");
+    expect(res.status()).toBe(200);
+    const body = await res.json();
+    expect(body.library.id).toBe("public-lib-1");
+    expect(body.library.isPublic).toBe(1);
+  });
+
+  test("GET /api/libraries/$id 404 for other user's private library", async ({
+    userClient,
+  }) => {
+    const res = await userClient.getLibrary("private-lib-1");
     expect(res.status()).toBe(404);
     const body = await res.json();
     expect(body.error).toBeTruthy();

@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "handler": {
+          "type": "command",
+          "command": ".claude/hooks/post-commit-reminder.sh",
+          "timeout": 5
+        }
+      }
+    ]
+  }
+}
